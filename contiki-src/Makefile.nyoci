@@ -1,0 +1,57 @@
+ifndef NYOCI_ROOT
+  ${error NYOCI_ROOT not defined! You must specify where LibNyoci resides}
+endif
+
+PROJECT_SOURCEFILES += nyoci.c nyoci-inbound.c nyoci-outbound.c \
+	nyoci-plat-net.c nyoci-observable.c nyoci-timer.c nyoci-transaction.c \
+	nyoci-dupe.c nyoci-missing.c nyoci-session.c nyoci-async.c
+PROJECT_SOURCEFILES += coap.c
+PROJECT_SOURCEFILES += url-helpers.c
+PROJECT_SOURCEFILES += string-utils.c
+PROJECT_SOURCEFILES += fasthash.c
+PROJECT_SOURCEFILES += nyoci-task.c
+
+# Missing function replacements
+MISSING_FUNCS = strlcat strlcpy
+PROJECT_SOURCEFILES += $(addsuffix .c,$(MISSING_FUNCS))
+CFLAGS += $(foreach func,$(MISSING_FUNCS), -include $(NYOCI_ROOT)/src/missing/$(func)/$(func).h)
+PROJECTDIRS += $(addprefix $(NYOCI_ROOT)/src/missing/,$(MISSING_FUNCS))
+
+# Extras
+ifeq ($(NYOCI_CONF_EXTRAS),1)
+PROJECT_SOURCEFILES += nyoci-list.c nyoci-node-router.c
+PROJECT_SOURCEFILES += nyoci-var-handler.c
+PROJECTDIRS += $(NYOCI_ROOT)/src/libnyociextra
+endif
+
+ifeq ($(NYOCI_CONF_LED_NODE),1)
+PROJECT_SOURCEFILES += led-node.c
+endif
+
+ifeq ($(NYOCI_CONF_SENSOR_NODE),1)
+PROJECT_SOURCEFILES += sensor-node.c
+endif
+
+USING_LIBNYOCI = 1
+
+ifdef VERBOSE_DEBUG
+#CFLAGS += -DDEBUG=$(VERBOSE_DEBUG) -D_DEBUG=$(VERBOSE_DEBUG)
+CFLAGS += -DVERBOSE_DEBUG=$(VERBOSE_DEBUG)
+#CFLAGS += -DUIP_CONF_LOGGING=$(VERBOSE_DEBUG)
+endif
+
+CFLAGS += -DNYOCI_CONFIG_OPTIONS_HEADER='"nyoci-contiki-config.h"'
+CFLAGS += -DUIP_CONF_BROADCAST=1
+#CFLAGS += -DUIP_UDP_SEND_UNREACH_NOPORT=1
+#CFLAGS += -DUIP_CONF_ICMP_DEST_UNREACH=1
+WFLAGS += -Wno-unknown-pragmas -Wno-unused-label
+
+CFLAGS += -I$(NYOCI_ROOT)/src
+CFLAGS += -I$(NYOCI_ROOT)/src/libnyoci
+CFLAGS += -I$(NYOCI_ROOT)/src/plat-net/uip
+CFLAGS += -I$(NYOCI_ROOT)/contiki-src
+
+PROJECTDIRS += $(NYOCI_ROOT)/src
+PROJECTDIRS += $(NYOCI_ROOT)/src/libnyoci
+PROJECTDIRS += $(NYOCI_ROOT)/src/plat-net/uip
+PROJECTDIRS += $(NYOCI_ROOT)/contiki-src

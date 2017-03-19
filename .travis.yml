@@ -1,0 +1,43 @@
+language: c
+
+os:
+    - linux
+    - osx
+
+compiler:
+    - clang
+    - gcc
+
+before_install:
+    - .travis/before_install.sh
+
+before_script:
+    - .travis/before_script.sh
+
+script:
+    - .travis/script.sh
+
+after_success:
+    - ssh-agent .travis/after_success.sh
+
+env:
+    - BUILD_MAKEARGS='distcheck' BUILD_PLATFORM='unix' BUILD_MAKEPATH='build'
+    - BUILD_MAKEARGS='check' BUILD_CONFIGFLAGS='--enable-embedded NYOCI_CONF_TRANS_ENABLE_BLOCK2=1 NYOCI_CONF_TRANS_ENABLE_OBSERVING=1' BUILD_PLATFORM='unix' BUILD_MAKEPATH='build'
+    - BUILD_MAKEARGS='check' BUILD_CONFIGFLAGS='--enable-dtls' BUILD_PLATFORM='unix' BUILD_MAKEPATH='build'
+
+matrix:
+    exclude:
+        - os: osx
+          compiler: gcc
+        - os: osx
+          env: BUILD_MAKEARGS='check' BUILD_CONFIGFLAGS='--enable-dtls' BUILD_PLATFORM='unix' BUILD_MAKEPATH='build'
+    include:
+        - os: linux
+          compiler: gcc
+          env: BUILD_PLATFORM='contiki' BUILD_MAKEPATH='contiki-src/examples/nyoci-plugtest' BUILD_MAKEARGS='TARGET=minimal-net CONTIKI=../../../contiki'
+        - os: linux
+          compiler: gcc
+          env: BUILD_PLATFORM='contiki' BUILD_MAKEPATH='contiki-src/examples/nyoci-complex' BUILD_MAKEARGS='TARGET=native CONTIKI=../../../contiki'
+        - os: linux
+          compiler: gcc
+          env: BUILD_PLATFORM='contiki' BUILD_MAKEPATH='contiki-src/examples/nyoci-simple' BUILD_MAKEARGS='TARGET=minimal-net CONTIKI=../../../contiki'
