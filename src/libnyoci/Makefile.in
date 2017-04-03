@@ -566,25 +566,17 @@ libnyoci_la_SOURCES = nyoci.c nyoci-timer.c coap.c coap.h \
 	btree.h ll.h url-helpers.c fasthash.c string-utils.c \
 	url-helpers.h fasthash.h string-utils.h assert-macros.h \
 	$(NULL)
-pkginclude_HEADERS = \
-	libnyoci.h \
-	nyoci-opts.h \
-	nyoci-defaults.h \
-	nyoci-timer.h \
-	nyoci-transaction.h \
-	nyoci-observable.h \
-	nyoci-helpers.h \
-	nyoci-session.h \
-	nyoci-status.h \
-	nyoci-async.h \
-	nyoci-plat-net-func.h \
-	nyoci-plat-tls-func.h \
-	$(top_builddir)/src/libnyoci/nyoci-config.h \
-	btree.h \
-	coap.h \
-	ll.h \
-	$(NULL)
 
+# Eventually these headers should be removed or reconsidered,
+# but at the moment is is rather convenient to keep them around.
+pkginclude_HEADERS = libnyoci.h nyoci-opts.h nyoci-defaults.h \
+	nyoci-timer.h nyoci-transaction.h nyoci-observable.h \
+	nyoci-helpers.h nyoci-session.h nyoci-status.h nyoci-async.h \
+	nyoci-plat-net-func.h nyoci-plat-tls-func.h \
+	$(top_builddir)/src/libnyoci/nyoci-config.h btree.h coap.h \
+	ll.h $(NULL) assert-macros.h fasthash.h url-helpers.h \
+	string-utils.h nyoci-internal.h nyoci-dupe.h nyoci-logging.h \
+	$(NULL)
 EXTRA_DIST = nyoci-config.h.in
 libnyoci_la_CFLAGS = $(AM_CFLAGS) $(PTHREAD_CFLAGS) $(HIDDEN_VISIBILITY_CFLAGS)
 libnyoci_la_LIBADD = $(ALLOCA) $(PTHREAD_LIBS) \

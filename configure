@@ -14600,7 +14600,7 @@ fi
 
 
 
-SOURCE_VERSION=
+SOURCE_VERSION=0.07.00rc1-1-gcb0f86c
 
 
 cat >>confdefs.h <<_ACEOF
