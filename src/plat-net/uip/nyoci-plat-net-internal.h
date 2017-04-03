@@ -63,12 +63,16 @@
 #define NYOCI_COAP_MULTICAST_ALLDEVICES_ADDR	COAP_MULTICAST_IP4_ALLDEVICES
 #endif
 
+NYOCI_BEGIN_C_DECLS
+
 struct nyoci_plat_s {
 	struct uip_udp_conn*	udp_conn;
 	nyoci_sockaddr_t	sockaddr_local;
 	nyoci_sockaddr_t	sockaddr_remote;
 	nyoci_session_type_t session_type;
 };
+
+NYOCI_END_C_DECLS
 
 #if UIP_CONF_IPV6
 #define NYOCI_ADDR_NTOP(dest, len, addr) sprintf(dest,"%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x", ((uint8_t *)addr)[0], ((uint8_t *)addr)[1], ((uint8_t *)addr)[2], ((uint8_t *)addr)[3], ((uint8_t *)addr)[4], ((uint8_t *)addr)[5], ((uint8_t *)addr)[6], ((uint8_t *)addr)[7], ((uint8_t *)addr)[8], ((uint8_t *)addr)[9], ((uint8_t *)addr)[10], ((uint8_t *)addr)[11], ((uint8_t *)addr)[12], ((uint8_t *)addr)[13], ((uint8_t *)addr)[14], ((uint8_t *)addr)[15])

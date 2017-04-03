@@ -44,6 +44,7 @@
 
 #include "nyoci-internal.h"
 #include "nyoci-logging.h"
+#include "nyoci-missing.h"
 
 #include <stdio.h>
 #include <poll.h>

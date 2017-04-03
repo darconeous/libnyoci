@@ -37,6 +37,7 @@
 #include <poll.h>
 
 #include <libnyoci/libnyoci.h>
+#include "string-utils.h"
 #include "nyoci-missing.h"
 
 #include "cmd_list.h"

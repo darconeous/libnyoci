@@ -31,13 +31,15 @@
 #define __NYOCI_INTERNAL_H__ 1
 
 #include "libnyoci.h"
-#include "nyoci-timer.h"
-#include "fasthash.h"
+#include "string-utils.h"
+#include "nyoci-dupe.h"
+#include "nyoci-plat-net-internal.h"
 
 #ifndef VERBOSE_DEBUG
 #define VERBOSE_DEBUG 0
 #endif
 
+// TODO: Move this to the platform
 #ifndef NYOCI_FUNC_RANDOM_UINT32
 #if defined(__APPLE__)
 #define NYOCI_FUNC_RANDOM_UINT32()   arc4random()
@@ -56,11 +58,7 @@
 #endif
 #endif
 
-#include "nyoci-missing.h"
-#include "string-utils.h"
-
 NYOCI_BEGIN_C_DECLS
-
 
 #if NYOCI_SINGLETON
 #define nyoci_set_current_instance(x)
@@ -75,10 +73,6 @@ NYOCI_INTERNAL_EXTERN void nyoci_set_current_instance(nyoci_t x);
 
 // MARK: -
 // MARK: Class Definitions
-
-#include "nyoci-plat-net-internal.h"
-
-#include "nyoci-dupe.h"
 
 #if NYOCI_CONF_ENABLE_VHOSTS
 struct nyoci_vhost_s {
@@ -159,10 +153,8 @@ struct nyoci_s {
 #endif
 };
 
-
 //! Initializes an LibNyoci instance. Does not allocate any memory.
 NYOCI_API_EXTERN nyoci_t nyoci_init(nyoci_t self);
-
 
 NYOCI_INTERNAL_EXTERN nyoci_status_t nyoci_handle_request();
 

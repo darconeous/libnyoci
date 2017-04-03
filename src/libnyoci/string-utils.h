@@ -47,6 +47,17 @@ NYOCI_INTERNAL_EXTERN char * int32_to_dec_cstr(char s[], int32_t n);
 
 NYOCI_INTERNAL_EXTERN bool str2bool(const char* str);
 
+#if __AVR__
+#include <avr/pgmspace.h>
+#define strnequal_const(a, const_b, len_a) (strncmp_P(a, PSTR(const_b),len_a) == 0)
+#define strequal_const(a, b) (strcmp_P(a, PSTR(b)) == 0)
+#define strhasprefix_const(a, b) (strncmp_P(a, PSTR(b), sizeof(b) - 1) == 0)
+#else
+#define strnequal_const(a, const_b, len_a) (strncmp(a, const_b,len_a) == 0)
+#define strequal_const(a, b) (strcmp(a, b) == 0)
+#define strhasprefix_const(a, b) (strncmp(a, b, sizeof(b) - 1) == 0)
+#endif
+
 #if defined(__cplusplus)
 }
 #endif

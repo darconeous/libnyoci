@@ -28,6 +28,7 @@
 #include <libnyoci/url-helpers.h>
 #include <signal.h>
 #include "nyocictl.h"
+#include "string-utils.h"
 
 static arg_list_item_t option_list[] = {
 	{ 'h', "help",				  NULL, "Print Help" },

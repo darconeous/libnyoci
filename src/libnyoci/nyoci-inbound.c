@@ -85,6 +85,12 @@ nyoci_inbound_get_content_type() {
 	return nyoci_get_current_instance()->inbound.content_type;
 }
 
+uint32_t
+nyoci_inbound_get_observe() {
+	return nyoci_get_current_instance()->inbound.observe_value;
+}
+
+
 uint16_t
 nyoci_inbound_get_flags() {
 	return nyoci_get_current_instance()->inbound.flags;

@@ -351,6 +351,9 @@ NYOCI_API_EXTERN uint16_t nyoci_inbound_get_flags(void);
 //! Returns true if the inbound packet is a multicast packet
 #define nyoci_inbound_is_multicast() ((nyoci_inbound_get_flags()&NYOCI_INBOUND_FLAG_MULTICAST)==NYOCI_INBOUND_FLAG_MULTICAST)
 
+//! Returns true if the inbound packet has an observe option
+#define nyoci_inbound_has_observe() ((nyoci_inbound_get_flags()&NYOCI_INBOUND_FLAG_HAS_OBSERVE)==NYOCI_INBOUND_FLAG_HAS_OBSERVE)
+
 //! Returns true if LibNyoci thinks the inbound packet originated from the local machine.
 #define nyoci_inbound_is_local() ((nyoci_inbound_get_flags()&NYOCI_INBOUND_FLAG_LOCAL)==NYOCI_INBOUND_FLAG_LOCAL)
 
@@ -360,6 +363,9 @@ NYOCI_API_EXTERN const char* nyoci_inbound_get_content_ptr(void);
 
 //!	Returns the length of the inbound packet's content.
 NYOCI_API_EXTERN coap_size_t nyoci_inbound_get_content_len(void);
+
+//!	Convenience function for getting the value of the observe header.
+NYOCI_API_EXTERN uint32_t nyoci_inbound_get_observe(void);
 
 //!	Convenience function for getting the content type of the inbound packet.
 NYOCI_API_EXTERN coap_content_type_t nyoci_inbound_get_content_type(void);

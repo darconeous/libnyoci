@@ -35,6 +35,7 @@
 #include "libnyoci.h"
 #include "nyoci-internal.h"
 #include "nyoci-logging.h"
+#include "nyoci-missing.h"
 
 #if NYOCI_AVOID_MALLOC && NYOCI_TRANSACTION_POOL_SIZE
 #warning Transaction pool should be moved into the LibNyoci instance.

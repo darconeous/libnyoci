@@ -45,9 +45,9 @@
 
 #include <stdio.h>
 
-#include "libnyoci.h"
 #include "nyoci-internal.h"
 
+#include "nyoci-missing.h"
 #include "nyoci-logging.h"
 #include "url-helpers.h"
 #include <string.h>

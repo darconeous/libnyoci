@@ -34,6 +34,7 @@
 #include "assert-macros.h"
 #include "libnyoci.h"
 #include "nyoci-internal.h"
+#include "nyoci-missing.h"
 
 #include <stdio.h>
 

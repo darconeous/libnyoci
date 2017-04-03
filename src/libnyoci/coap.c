@@ -34,6 +34,7 @@
 #include "nyoci-logging.h"
 #include "nyoci-helpers.h"
 #include "nyoci-internal.h"
+#include "nyoci-missing.h"
 
 #if CONTIKI
 #include "contiki.h"
