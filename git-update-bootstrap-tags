@@ -50,7 +50,9 @@ unset FALLBACK_AUTOCONF_REF
 unset FALLBACK_FULL_REF
 unset BOOTSTRAP_COMMAND
 
-ALLOW_UNRELATED_HISTORIES=--allow-unrelated-histories
+if git merge --help | grep -q allow-unrelated-histories 2>/dev/null 1>/dev/null
+then ALLOW_UNRELATED_HISTORIES=--allow-unrelated-histories
+fi
 
 BOOTSTRAP_SUBREPO=.update-bootstrap-proj
 
