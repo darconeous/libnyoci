@@ -120,12 +120,13 @@ update_bootstrap() {
 	local autoconf_ref="$2"
 	local full_ref="$3"
 	local REV=`git describe --tags --always ${source_ref}`
+	local prev_dir="`pwd`"
 
 	[ -d "${BOOTSTRAP_SUBREPO}" ] && { chmod -R 777 "${BOOTSTRAP_SUBREPO}" && rm -fr "${BOOTSTRAP_SUBREPO}" ; }
 
 	git clone .git "${BOOTSTRAP_SUBREPO}" || die
 
-	pushd "${BOOTSTRAP_SUBREPO}" || die
+	cd "${BOOTSTRAP_SUBREPO}" || die
 
 	git checkout "${source_ref}" || die
 
@@ -183,7 +184,7 @@ Based-on: `git rev-parse $REV`" || die
 
 	git push -f origin HEAD:refs/heads/__FULL_HEAD ${autoconf_ref}:refs/heads/__AUTOCONF_HEAD || die
 
-	popd || die
+	cd "${prev_dir}" || die
 
 	rm -fr "${BOOTSTRAP_SUBREPO}" || die
 }
