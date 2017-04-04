@@ -29,8 +29,12 @@
 #ifndef NYOCI_nyoci_plat_openssl_h
 #define NYOCI_nyoci_plat_openssl_h
 
-#include "libnyoci.h"
+#if !defined(NYOCI_INCLUDED_FROM_LIBNYOCI_H) && !defined(BUILDING_LIBNYOCI)
+#error "Do not include this header directly, include <libnyoci/libnyoci.h> instead"
+#endif
+
 #include "nyoci-plat-tls-func.h"
+#include "nyoci-timer.h"
 #include "btree.h"
 
 #include <sys/types.h>

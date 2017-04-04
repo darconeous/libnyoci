@@ -1,5 +1,17 @@
 language: c
 
+addons:
+    apt:
+        packages:
+            - git
+            - bsdtar
+            - libtool
+            - automake
+            - autoconf
+            - autoconf-archive
+            - libreadline-dev
+            - libssl-dev
+
 os:
     - linux
     - osx
@@ -23,21 +35,21 @@ after_success:
 env:
     - BUILD_MAKEARGS='distcheck' BUILD_PLATFORM='unix' BUILD_MAKEPATH='build'
     - BUILD_MAKEARGS='check' BUILD_CONFIGFLAGS='--enable-embedded NYOCI_CONF_TRANS_ENABLE_BLOCK2=1 NYOCI_CONF_TRANS_ENABLE_OBSERVING=1' BUILD_PLATFORM='unix' BUILD_MAKEPATH='build'
-    - BUILD_MAKEARGS='check' BUILD_CONFIGFLAGS='--enable-dtls' BUILD_PLATFORM='unix' BUILD_MAKEPATH='build'
+    - BUILD_MAKEARGS='check' BUILD_CONFIGFLAGS='--enable-tls' BUILD_PLATFORM='unix' BUILD_MAKEPATH='build'
 
 matrix:
     exclude:
         - os: osx
           compiler: gcc
         - os: osx
-          env: BUILD_MAKEARGS='check' BUILD_CONFIGFLAGS='--enable-dtls' BUILD_PLATFORM='unix' BUILD_MAKEPATH='build'
+          env: BUILD_MAKEARGS='check' BUILD_CONFIGFLAGS='--enable-tls' BUILD_PLATFORM='unix' BUILD_MAKEPATH='build'
     include:
         - os: linux
           compiler: gcc
-          env: BUILD_PLATFORM='contiki' BUILD_MAKEPATH='contiki-src/examples/nyoci-plugtest' BUILD_MAKEARGS='TARGET=minimal-net CONTIKI=../../../contiki'
+          env: BUILD_PLATFORM='contiki' BUILD_MAKEPATH='contiki-src/examples/nyoci-plugtest' BUILD_MAKEARGS='TARGET=minimal-net CONTIKI=../../../contiki' SUPPORTED_CONTIKI_REF='1d69099'
         - os: linux
           compiler: gcc
-          env: BUILD_PLATFORM='contiki' BUILD_MAKEPATH='contiki-src/examples/nyoci-complex' BUILD_MAKEARGS='TARGET=native CONTIKI=../../../contiki'
+          env: BUILD_PLATFORM='contiki' BUILD_MAKEPATH='contiki-src/examples/nyoci-complex' BUILD_MAKEARGS='TARGET=native CONTIKI=../../../contiki' SUPPORTED_CONTIKI_REF='1d69099'
         - os: linux
           compiler: gcc
-          env: BUILD_PLATFORM='contiki' BUILD_MAKEPATH='contiki-src/examples/nyoci-simple' BUILD_MAKEARGS='TARGET=minimal-net CONTIKI=../../../contiki'
+          env: BUILD_PLATFORM='contiki' BUILD_MAKEPATH='contiki-src/examples/nyoci-simple' BUILD_MAKEARGS='TARGET=minimal-net CONTIKI=../../../contiki' SUPPORTED_CONTIKI_REF='1d69099'

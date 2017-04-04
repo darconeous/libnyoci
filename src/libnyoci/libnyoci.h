@@ -531,6 +531,7 @@ NYOCI_END_C_DECLS
 #include "nyoci-plat-tls.h"
 #endif
 
+#include "nyoci-timer.h"
 #include "nyoci-async.h"
 #include "nyoci-transaction.h"
 #include "nyoci-observable.h"
