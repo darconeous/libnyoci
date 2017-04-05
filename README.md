@@ -88,10 +88,6 @@ To get the bleeding-edge release:
 	$ brew tap darconeous/embedded
 	$ brew install libnyoci --HEAD
 
-Node: This is mostly for people who just want to use `nyocictl` (described below).
-If you want to compile against LibNyoci, you'll currently need to grab the sources
-and build against them directly.
-
 ## Getting Started ##
 
 The best way to get started is to have a look at some example code
@@ -127,9 +123,9 @@ enabling/disabling observing, etc.
 
 ## Contiki Support ##
 
-LibNyoci supports [Contiki](http://contiki-os.org/). To build the Contiki
-examples, just make sure that the `CONTIKI` environment variable is set point
-to your Contiki root, like so:
+LibNyoci supports [Contiki](http://contiki-os.org/) (albeit a rather old version).
+To build the Contiki examples, just make sure that the `CONTIKI` environment
+variable is set point to your Contiki root, like so:
 
 	$ cd contiki-src/examples/nyoci-simple
 	$ make CONTIKI=~/Projects/contiki TARGET=minimal-net
@@ -183,4 +179,4 @@ Here are a few examples of how you can use it:
 
 ### Special Thanks ###
 
- * [Paulo Brizolara](https://github.com/paulobrizolara)
+ * [Paulo Brizolara](https://github.com/paulobrizolara), for help with IPv4 multicast support.
