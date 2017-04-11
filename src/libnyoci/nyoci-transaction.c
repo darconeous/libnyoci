@@ -469,6 +469,7 @@ nyoci_transaction_begin(
 	NYOCI_SINGLETON_SELF_HOOK;
 
 	require_action(handler != NULL, bail, ret = NYOCI_STATUS_INVALID_ARGUMENT);
+	require_action(self != NULL, bail, ret = NYOCI_STATUS_INVALID_ARGUMENT);
 
 	DEBUG_PRINTF("nyoci_transaction_begin: %p",handler);
 

@@ -60,13 +60,6 @@
 
 NYOCI_BEGIN_C_DECLS
 
-#if NYOCI_SINGLETON
-#define nyoci_set_current_instance(x)
-#else
-NYOCI_INTERNAL_EXTERN void nyoci_set_current_instance(nyoci_t x);
-#endif
-
-
 #ifndef NYOCI_HOOK_TIMER_NEEDS_REFRESH
 #define NYOCI_HOOK_TIMER_NEEDS_REFRESH(x)	do { } while (0)
 #endif

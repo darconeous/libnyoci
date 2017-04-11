@@ -184,10 +184,12 @@ NYOCI_API_EXTERN void nyoci_release(nyoci_t self);
 #if NYOCI_SINGLETON && !defined(DOXYGEN_SHOULD_SKIP_THIS)
 NYOCI_API_EXTERN struct nyoci_s gNyociInstance;
 #define nyoci_get_current_instance() (&gNyociInstance)
+#define nyoci_set_current_instance(x)
 #else
 //! Used from inside of callbacks to obtain a reference to the current instance.
 NYOCI_API_EXTERN nyoci_t nyoci_get_current_instance(void);
 
+NYOCI_INTERNAL_EXTERN void nyoci_set_current_instance(nyoci_t x);
 #endif
 
 //!	Sets the default request handler.
