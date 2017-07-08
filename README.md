@@ -62,7 +62,9 @@ To just build the latest tagged stable release:
 For bleeding-edge:
 
 	$ git checkout master
-	$ git archive origin/autoconf/master | tar xv
+	$ git archive origin/autoconf/master | tar xvm
+	  # Next line is a work-around for timestamp problems
+	$ touch aclocal.m4 && touch configure && touch `find . -name '*.in'`
 	$ ./configure
 	$ make
 	$ sudo make install
