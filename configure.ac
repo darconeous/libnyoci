@@ -16,6 +16,7 @@ m4_ifdef([AX_CODE_COVERAGE], [AX_CODE_COVERAGE], [AC_SUBST([CODE_COVERAGE_RULES]
 
 AC_GNU_SOURCE
 AC_PROG_LIBTOOL
+AM_MAINTAINER_MODE
 LT_INIT
 
 dnl ###########################################################################
