@@ -1,0 +1,939 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		277A057A20AC959F00970354 /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A044020AC959E00970354 /* config.h */; };
+		277A059820AC959F00970354 /* assert-macros.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A048920AC959E00970354 /* assert-macros.h */; };
+		277A059920AC959F00970354 /* btree.c in Sources */ = {isa = PBXBuildFile; fileRef = 277A048A20AC959E00970354 /* btree.c */; };
+		277A059A20AC959F00970354 /* btree.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A048B20AC959E00970354 /* btree.h */; };
+		277A059B20AC959F00970354 /* coap.c in Sources */ = {isa = PBXBuildFile; fileRef = 277A048C20AC959E00970354 /* coap.c */; };
+		277A059C20AC959F00970354 /* coap.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A048D20AC959E00970354 /* coap.h */; };
+		277A059D20AC959F00970354 /* fasthash.c in Sources */ = {isa = PBXBuildFile; fileRef = 277A048E20AC959E00970354 /* fasthash.c */; };
+		277A059E20AC959F00970354 /* fasthash.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A048F20AC959E00970354 /* fasthash.h */; };
+		277A059F20AC959F00970354 /* libnyoci.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A049020AC959E00970354 /* libnyoci.h */; };
+		277A05AF20AC959F00970354 /* ll.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A04B220AC959F00970354 /* ll.h */; };
+		277A05B120AC959F00970354 /* nyoci-async.c in Sources */ = {isa = PBXBuildFile; fileRef = 277A04B620AC959F00970354 /* nyoci-async.c */; };
+		277A05B220AC959F00970354 /* nyoci-async.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A04B720AC959F00970354 /* nyoci-async.h */; };
+		277A05B320AC959F00970354 /* nyoci-config.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A04B820AC959F00970354 /* nyoci-config.h */; };
+		277A05B420AC959F00970354 /* nyoci-defaults.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A04BA20AC959F00970354 /* nyoci-defaults.h */; };
+		277A05B520AC959F00970354 /* nyoci-dupe.c in Sources */ = {isa = PBXBuildFile; fileRef = 277A04BB20AC959F00970354 /* nyoci-dupe.c */; };
+		277A05B620AC959F00970354 /* nyoci-dupe.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A04BC20AC959F00970354 /* nyoci-dupe.h */; };
+		277A05B720AC959F00970354 /* nyoci-helpers.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A04BD20AC959F00970354 /* nyoci-helpers.h */; };
+		277A05B820AC959F00970354 /* nyoci-inbound.c in Sources */ = {isa = PBXBuildFile; fileRef = 277A04BE20AC959F00970354 /* nyoci-inbound.c */; };
+		277A05B920AC959F00970354 /* nyoci-internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A04BF20AC959F00970354 /* nyoci-internal.h */; };
+		277A05BA20AC959F00970354 /* nyoci-logging.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A04C020AC959F00970354 /* nyoci-logging.h */; };
+		277A05BB20AC959F00970354 /* nyoci-missing.c in Sources */ = {isa = PBXBuildFile; fileRef = 277A04C120AC959F00970354 /* nyoci-missing.c */; };
+		277A05BC20AC959F00970354 /* nyoci-missing.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A04C220AC959F00970354 /* nyoci-missing.h */; };
+		277A05BD20AC959F00970354 /* nyoci-observable.c in Sources */ = {isa = PBXBuildFile; fileRef = 277A04C320AC959F00970354 /* nyoci-observable.c */; };
+		277A05BE20AC959F00970354 /* nyoci-observable.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A04C420AC959F00970354 /* nyoci-observable.h */; };
+		277A05BF20AC959F00970354 /* nyoci-opts.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A04C520AC959F00970354 /* nyoci-opts.h */; };
+		277A05C020AC959F00970354 /* nyoci-outbound.c in Sources */ = {isa = PBXBuildFile; fileRef = 277A04C620AC959F00970354 /* nyoci-outbound.c */; };
+		277A05C120AC959F00970354 /* nyoci-plat-net-func.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A04C720AC959F00970354 /* nyoci-plat-net-func.h */; };
+		277A05C220AC959F00970354 /* nyoci-plat-tls-func.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A04C820AC959F00970354 /* nyoci-plat-tls-func.h */; };
+		277A05C320AC959F00970354 /* nyoci-session.c in Sources */ = {isa = PBXBuildFile; fileRef = 277A04C920AC959F00970354 /* nyoci-session.c */; };
+		277A05C420AC959F00970354 /* nyoci-session.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A04CA20AC959F00970354 /* nyoci-session.h */; };
+		277A05C520AC959F00970354 /* nyoci-status.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A04CB20AC959F00970354 /* nyoci-status.h */; };
+		277A05C620AC959F00970354 /* nyoci-timer.c in Sources */ = {isa = PBXBuildFile; fileRef = 277A04CC20AC959F00970354 /* nyoci-timer.c */; };
+		277A05C720AC959F00970354 /* nyoci-timer.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A04CD20AC959F00970354 /* nyoci-timer.h */; };
+		277A05C820AC959F00970354 /* nyoci-transaction.c in Sources */ = {isa = PBXBuildFile; fileRef = 277A04CE20AC959F00970354 /* nyoci-transaction.c */; };
+		277A05C920AC959F00970354 /* nyoci-transaction.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A04CF20AC959F00970354 /* nyoci-transaction.h */; };
+		277A05CA20AC959F00970354 /* nyoci.c in Sources */ = {isa = PBXBuildFile; fileRef = 277A04D020AC959F00970354 /* nyoci.c */; };
+		277A05CB20AC959F00970354 /* string-utils.c in Sources */ = {isa = PBXBuildFile; fileRef = 277A04D220AC959F00970354 /* string-utils.c */; };
+		277A05CC20AC959F00970354 /* string-utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A04D320AC959F00970354 /* string-utils.h */; };
+		277A05CD20AC959F00970354 /* url-helpers.c in Sources */ = {isa = PBXBuildFile; fileRef = 277A04D420AC959F00970354 /* url-helpers.c */; };
+		277A05CE20AC959F00970354 /* url-helpers.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A04D520AC959F00970354 /* url-helpers.h */; };
+		277A05D520AC959F00970354 /* libnyociextra.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A04E420AC959F00970354 /* libnyociextra.h */; };
+		277A05D720AC959F00970354 /* nyoci-list.c in Sources */ = {isa = PBXBuildFile; fileRef = 277A04EB20AC959F00970354 /* nyoci-list.c */; };
+		277A05D920AC959F00970354 /* nyoci-node-router.c in Sources */ = {isa = PBXBuildFile; fileRef = 277A04EE20AC959F00970354 /* nyoci-node-router.c */; };
+		277A05DA20AC959F00970354 /* nyoci-node-router.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A04EF20AC959F00970354 /* nyoci-node-router.h */; };
+		277A05DC20AC959F00970354 /* nyoci-var-handler.c in Sources */ = {isa = PBXBuildFile; fileRef = 277A04F220AC959F00970354 /* nyoci-var-handler.c */; };
+		277A05DD20AC959F00970354 /* nyoci-var-handler.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A04F320AC959F00970354 /* nyoci-var-handler.h */; };
+		277A05E020AC959F00970354 /* fgetln.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A04FA20AC959F00970354 /* fgetln.h */; };
+		277A05E120AC959F00970354 /* getline.c in Sources */ = {isa = PBXBuildFile; fileRef = 277A04FB20AC959F00970354 /* getline.c */; };
+		277A05E420AC959F00970354 /* strlcat.c in Sources */ = {isa = PBXBuildFile; fileRef = 277A050620AC959F00970354 /* strlcat.c */; };
+		277A05E520AC959F00970354 /* strlcat.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A050720AC959F00970354 /* strlcat.h */; };
+		277A05E620AC959F00970354 /* strlcat_test.c in Sources */ = {isa = PBXBuildFile; fileRef = 277A050820AC959F00970354 /* strlcat_test.c */; };
+		277A05E820AC959F00970354 /* strlcpy.c in Sources */ = {isa = PBXBuildFile; fileRef = 277A051020AC959F00970354 /* strlcpy.c */; };
+		277A05E920AC959F00970354 /* strlcpy.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A051120AC959F00970354 /* strlcpy.h */; };
+		277A05EA20AC959F00970354 /* strlcpy_test.c in Sources */ = {isa = PBXBuildFile; fileRef = 277A051220AC959F00970354 /* strlcpy_test.c */; };
+		277A05EC20AC959F00970354 /* cmd_delete.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A051F20AC959F00970354 /* cmd_delete.h */; };
+		277A05EE20AC959F00970354 /* cmd_get.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A052120AC959F00970354 /* cmd_get.h */; };
+		277A05F020AC959F00970354 /* cmd_list.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A052320AC959F00970354 /* cmd_list.h */; };
+		277A05F220AC959F00970354 /* cmd_post.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A052520AC959F00970354 /* cmd_post.h */; };
+		277A05F420AC959F00970354 /* cmd_repeat.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A052720AC959F00970354 /* cmd_repeat.h */; };
+		277A05F620AC959F00970354 /* help.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A052920AC959F00970354 /* help.h */; };
+		277A060020AC959F00970354 /* nyocictl.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A053620AC959F00970354 /* nyocictl.h */; };
+		277A060520AC959F00970354 /* nyoci-plat-net-internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A054520AC959F00970354 /* nyoci-plat-net-internal.h */; };
+		277A060620AC959F00970354 /* nyoci-plat-net.c in Sources */ = {isa = PBXBuildFile; fileRef = 277A054620AC959F00970354 /* nyoci-plat-net.c */; };
+		277A060720AC959F00970354 /* nyoci-plat-net.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A054720AC959F00970354 /* nyoci-plat-net.h */; };
+		277A060E20AC959F00970354 /* nyoci-plat-tls.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A055920AC959F00970354 /* nyoci-plat-tls.h */; };
+		277A061520AC959F00970354 /* plugtest-server.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A056C20AC959F00970354 /* plugtest-server.h */; };
+		277A061920AC959F00970354 /* version.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A057920AC959F00970354 /* version.h */; };
+		277A062520AC9B0C00970354 /* example-2.c in Sources */ = {isa = PBXBuildFile; fileRef = 277A045420AC959E00970354 /* example-2.c */; };
+		277A062920AC9B1E00970354 /* libnyoci.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 277A043720AC954900970354 /* libnyoci.a */; };
+		277A063520AC9C5500970354 /* cmd_delete.c in Sources */ = {isa = PBXBuildFile; fileRef = 277A051E20AC959F00970354 /* cmd_delete.c */; };
+		277A063620AC9C5500970354 /* cmd_get.c in Sources */ = {isa = PBXBuildFile; fileRef = 277A052020AC959F00970354 /* cmd_get.c */; };
+		277A063720AC9C5500970354 /* cmd_list.c in Sources */ = {isa = PBXBuildFile; fileRef = 277A052220AC959F00970354 /* cmd_list.c */; };
+		277A063820AC9C5500970354 /* cmd_post.c in Sources */ = {isa = PBXBuildFile; fileRef = 277A052420AC959F00970354 /* cmd_post.c */; };
+		277A063920AC9C5500970354 /* cmd_repeat.c in Sources */ = {isa = PBXBuildFile; fileRef = 277A052620AC959F00970354 /* cmd_repeat.c */; };
+		277A063A20AC9C5500970354 /* help.c in Sources */ = {isa = PBXBuildFile; fileRef = 277A052820AC959F00970354 /* help.c */; };
+		277A063B20AC9C5500970354 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 277A052A20AC959F00970354 /* main.c */; };
+		277A063E20AC9C6800970354 /* libnyoci.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 277A043720AC954900970354 /* libnyoci.a */; };
+		277A064020ACAA8400970354 /* libreadline.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 277A063F20ACAA8400970354 /* libreadline.tbd */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		277A062620AC9B1900970354 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 277A042F20AC954900970354 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 277A043620AC954900970354;
+			remoteInfo = nyoci;
+		};
+		277A063C20AC9C6300970354 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 277A042F20AC954900970354 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 277A043620AC954900970354;
+			remoteInfo = nyoci;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		277A061C20AC9B0200970354 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		277A062C20AC9C5000970354 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		277A043720AC954900970354 /* libnyoci.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libnyoci.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		277A044020AC959E00970354 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
+		277A045120AC959E00970354 /* example-1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "example-1.c"; sourceTree = "<group>"; };
+		277A045420AC959E00970354 /* example-2.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "example-2.c"; sourceTree = "<group>"; };
+		277A045720AC959E00970354 /* example-3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "example-3.c"; sourceTree = "<group>"; };
+		277A045A20AC959E00970354 /* example-4.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "example-4.c"; sourceTree = "<group>"; };
+		277A045D20AC959E00970354 /* example-multicast-request.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "example-multicast-request.c"; sourceTree = "<group>"; };
+		277A048920AC959E00970354 /* assert-macros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "assert-macros.h"; sourceTree = "<group>"; };
+		277A048A20AC959E00970354 /* btree.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = btree.c; sourceTree = "<group>"; };
+		277A048B20AC959E00970354 /* btree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = btree.h; sourceTree = "<group>"; };
+		277A048C20AC959E00970354 /* coap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = coap.c; sourceTree = "<group>"; };
+		277A048D20AC959E00970354 /* coap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = coap.h; sourceTree = "<group>"; };
+		277A048E20AC959E00970354 /* fasthash.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = fasthash.c; sourceTree = "<group>"; };
+		277A048F20AC959E00970354 /* fasthash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fasthash.h; sourceTree = "<group>"; };
+		277A049020AC959E00970354 /* libnyoci.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libnyoci.h; sourceTree = "<group>"; };
+		277A04B220AC959F00970354 /* ll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ll.h; sourceTree = "<group>"; };
+		277A04B620AC959F00970354 /* nyoci-async.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "nyoci-async.c"; sourceTree = "<group>"; };
+		277A04B720AC959F00970354 /* nyoci-async.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "nyoci-async.h"; sourceTree = "<group>"; };
+		277A04B820AC959F00970354 /* nyoci-config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "nyoci-config.h"; sourceTree = "<group>"; };
+		277A04BA20AC959F00970354 /* nyoci-defaults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "nyoci-defaults.h"; sourceTree = "<group>"; };
+		277A04BB20AC959F00970354 /* nyoci-dupe.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "nyoci-dupe.c"; sourceTree = "<group>"; };
+		277A04BC20AC959F00970354 /* nyoci-dupe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "nyoci-dupe.h"; sourceTree = "<group>"; };
+		277A04BD20AC959F00970354 /* nyoci-helpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "nyoci-helpers.h"; sourceTree = "<group>"; };
+		277A04BE20AC959F00970354 /* nyoci-inbound.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "nyoci-inbound.c"; sourceTree = "<group>"; };
+		277A04BF20AC959F00970354 /* nyoci-internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "nyoci-internal.h"; sourceTree = "<group>"; };
+		277A04C020AC959F00970354 /* nyoci-logging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "nyoci-logging.h"; sourceTree = "<group>"; };
+		277A04C120AC959F00970354 /* nyoci-missing.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "nyoci-missing.c"; sourceTree = "<group>"; };
+		277A04C220AC959F00970354 /* nyoci-missing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "nyoci-missing.h"; sourceTree = "<group>"; };
+		277A04C320AC959F00970354 /* nyoci-observable.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "nyoci-observable.c"; sourceTree = "<group>"; };
+		277A04C420AC959F00970354 /* nyoci-observable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "nyoci-observable.h"; sourceTree = "<group>"; };
+		277A04C520AC959F00970354 /* nyoci-opts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "nyoci-opts.h"; sourceTree = "<group>"; };
+		277A04C620AC959F00970354 /* nyoci-outbound.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "nyoci-outbound.c"; sourceTree = "<group>"; };
+		277A04C720AC959F00970354 /* nyoci-plat-net-func.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "nyoci-plat-net-func.h"; sourceTree = "<group>"; };
+		277A04C820AC959F00970354 /* nyoci-plat-tls-func.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "nyoci-plat-tls-func.h"; sourceTree = "<group>"; };
+		277A04C920AC959F00970354 /* nyoci-session.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "nyoci-session.c"; sourceTree = "<group>"; };
+		277A04CA20AC959F00970354 /* nyoci-session.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "nyoci-session.h"; sourceTree = "<group>"; };
+		277A04CB20AC959F00970354 /* nyoci-status.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "nyoci-status.h"; sourceTree = "<group>"; };
+		277A04CC20AC959F00970354 /* nyoci-timer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "nyoci-timer.c"; sourceTree = "<group>"; };
+		277A04CD20AC959F00970354 /* nyoci-timer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "nyoci-timer.h"; sourceTree = "<group>"; };
+		277A04CE20AC959F00970354 /* nyoci-transaction.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "nyoci-transaction.c"; sourceTree = "<group>"; };
+		277A04CF20AC959F00970354 /* nyoci-transaction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "nyoci-transaction.h"; sourceTree = "<group>"; };
+		277A04D020AC959F00970354 /* nyoci.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = nyoci.c; sourceTree = "<group>"; };
+		277A04D220AC959F00970354 /* string-utils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "string-utils.c"; sourceTree = "<group>"; };
+		277A04D320AC959F00970354 /* string-utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "string-utils.h"; sourceTree = "<group>"; };
+		277A04D420AC959F00970354 /* url-helpers.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "url-helpers.c"; sourceTree = "<group>"; };
+		277A04D520AC959F00970354 /* url-helpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "url-helpers.h"; sourceTree = "<group>"; };
+		277A04E420AC959F00970354 /* libnyociextra.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libnyociextra.h; sourceTree = "<group>"; };
+		277A04EB20AC959F00970354 /* nyoci-list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "nyoci-list.c"; sourceTree = "<group>"; };
+		277A04EE20AC959F00970354 /* nyoci-node-router.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "nyoci-node-router.c"; sourceTree = "<group>"; };
+		277A04EF20AC959F00970354 /* nyoci-node-router.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "nyoci-node-router.h"; sourceTree = "<group>"; };
+		277A04F220AC959F00970354 /* nyoci-var-handler.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "nyoci-var-handler.c"; sourceTree = "<group>"; };
+		277A04F320AC959F00970354 /* nyoci-var-handler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "nyoci-var-handler.h"; sourceTree = "<group>"; };
+		277A04FA20AC959F00970354 /* fgetln.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fgetln.h; sourceTree = "<group>"; };
+		277A04FB20AC959F00970354 /* getline.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = getline.c; sourceTree = "<group>"; };
+		277A050620AC959F00970354 /* strlcat.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = strlcat.c; sourceTree = "<group>"; };
+		277A050720AC959F00970354 /* strlcat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = strlcat.h; sourceTree = "<group>"; };
+		277A050820AC959F00970354 /* strlcat_test.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = strlcat_test.c; sourceTree = "<group>"; };
+		277A051020AC959F00970354 /* strlcpy.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = strlcpy.c; sourceTree = "<group>"; };
+		277A051120AC959F00970354 /* strlcpy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = strlcpy.h; sourceTree = "<group>"; };
+		277A051220AC959F00970354 /* strlcpy_test.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = strlcpy_test.c; sourceTree = "<group>"; };
+		277A051E20AC959F00970354 /* cmd_delete.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cmd_delete.c; sourceTree = "<group>"; };
+		277A051F20AC959F00970354 /* cmd_delete.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cmd_delete.h; sourceTree = "<group>"; };
+		277A052020AC959F00970354 /* cmd_get.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cmd_get.c; sourceTree = "<group>"; };
+		277A052120AC959F00970354 /* cmd_get.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cmd_get.h; sourceTree = "<group>"; };
+		277A052220AC959F00970354 /* cmd_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cmd_list.c; sourceTree = "<group>"; };
+		277A052320AC959F00970354 /* cmd_list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cmd_list.h; sourceTree = "<group>"; };
+		277A052420AC959F00970354 /* cmd_post.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cmd_post.c; sourceTree = "<group>"; };
+		277A052520AC959F00970354 /* cmd_post.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cmd_post.h; sourceTree = "<group>"; };
+		277A052620AC959F00970354 /* cmd_repeat.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cmd_repeat.c; sourceTree = "<group>"; };
+		277A052720AC959F00970354 /* cmd_repeat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cmd_repeat.h; sourceTree = "<group>"; };
+		277A052820AC959F00970354 /* help.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = help.c; sourceTree = "<group>"; };
+		277A052920AC959F00970354 /* help.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = help.h; sourceTree = "<group>"; };
+		277A052A20AC959F00970354 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
+		277A053620AC959F00970354 /* nyocictl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = nyocictl.h; sourceTree = "<group>"; };
+		277A054520AC959F00970354 /* nyoci-plat-net-internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "nyoci-plat-net-internal.h"; sourceTree = "<group>"; };
+		277A054620AC959F00970354 /* nyoci-plat-net.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "nyoci-plat-net.c"; sourceTree = "<group>"; };
+		277A054720AC959F00970354 /* nyoci-plat-net.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "nyoci-plat-net.h"; sourceTree = "<group>"; };
+		277A055820AC959F00970354 /* nyoci-plat-tls.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "nyoci-plat-tls.c"; sourceTree = "<group>"; };
+		277A055920AC959F00970354 /* nyoci-plat-tls.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "nyoci-plat-tls.h"; sourceTree = "<group>"; };
+		277A056220AC959F00970354 /* main-client.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "main-client.c"; sourceTree = "<group>"; };
+		277A056420AC959F00970354 /* main-server.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "main-server.c"; sourceTree = "<group>"; };
+		277A056B20AC959F00970354 /* plugtest-server.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "plugtest-server.c"; sourceTree = "<group>"; };
+		277A056C20AC959F00970354 /* plugtest-server.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "plugtest-server.h"; sourceTree = "<group>"; };
+		277A056F20AC959F00970354 /* selftest.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = selftest.sh; sourceTree = "<group>"; };
+		277A057720AC959F00970354 /* test-concurrency.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "test-concurrency.c"; sourceTree = "<group>"; };
+		277A057920AC959F00970354 /* version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = version.h; sourceTree = "<group>"; };
+		277A061E20AC9B0200970354 /* example-server */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "example-server"; sourceTree = BUILT_PRODUCTS_DIR; };
+		277A062E20AC9C5000970354 /* nyocictl */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = nyocictl; sourceTree = BUILT_PRODUCTS_DIR; };
+		277A063F20ACAA8400970354 /* libreadline.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libreadline.tbd; path = usr/lib/libreadline.tbd; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		277A043420AC954900970354 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		277A061B20AC9B0200970354 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				277A062920AC9B1E00970354 /* libnyoci.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		277A062B20AC9C5000970354 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				277A063E20AC9C6800970354 /* libnyoci.a in Frameworks */,
+				277A064020ACAA8400970354 /* libreadline.tbd in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		277A042E20AC954900970354 = {
+			isa = PBXGroup;
+			children = (
+				277A043E20AC959E00970354 /* src */,
+				277A043820AC954900970354 /* Products */,
+				277A062820AC9B1E00970354 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+			usesTabs = 1;
+		};
+		277A043820AC954900970354 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				277A043720AC954900970354 /* libnyoci.a */,
+				277A061E20AC9B0200970354 /* example-server */,
+				277A062E20AC9C5000970354 /* nyocictl */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		277A043E20AC959E00970354 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				277A044020AC959E00970354 /* config.h */,
+				277A057920AC959F00970354 /* version.h */,
+				277A044220AC959E00970354 /* examples */,
+				277A046220AC959E00970354 /* libnyoci */,
+				277A04D620AC959F00970354 /* libnyociextra */,
+				277A04F920AC959F00970354 /* missing */,
+				277A051320AC959F00970354 /* nyocictl */,
+				277A053720AC959F00970354 /* plat-net */,
+				277A055120AC959F00970354 /* plat-tls */,
+				277A055A20AC959F00970354 /* plugtest */,
+				277A057120AC959F00970354 /* tests */,
+			);
+			name = src;
+			path = ../src;
+			sourceTree = "<group>";
+		};
+		277A044220AC959E00970354 /* examples */ = {
+			isa = PBXGroup;
+			children = (
+				277A045120AC959E00970354 /* example-1.c */,
+				277A045420AC959E00970354 /* example-2.c */,
+				277A045720AC959E00970354 /* example-3.c */,
+				277A045A20AC959E00970354 /* example-4.c */,
+				277A045D20AC959E00970354 /* example-multicast-request.c */,
+			);
+			path = examples;
+			sourceTree = "<group>";
+		};
+		277A046220AC959E00970354 /* libnyoci */ = {
+			isa = PBXGroup;
+			children = (
+				277A048A20AC959E00970354 /* btree.c */,
+				277A048C20AC959E00970354 /* coap.c */,
+				277A048E20AC959E00970354 /* fasthash.c */,
+				277A04B620AC959F00970354 /* nyoci-async.c */,
+				277A04BB20AC959F00970354 /* nyoci-dupe.c */,
+				277A04BE20AC959F00970354 /* nyoci-inbound.c */,
+				277A04C120AC959F00970354 /* nyoci-missing.c */,
+				277A04C320AC959F00970354 /* nyoci-observable.c */,
+				277A04C620AC959F00970354 /* nyoci-outbound.c */,
+				277A04C920AC959F00970354 /* nyoci-session.c */,
+				277A04CC20AC959F00970354 /* nyoci-timer.c */,
+				277A04CE20AC959F00970354 /* nyoci-transaction.c */,
+				277A04D020AC959F00970354 /* nyoci.c */,
+				277A04D220AC959F00970354 /* string-utils.c */,
+				277A04D420AC959F00970354 /* url-helpers.c */,
+				277A048920AC959E00970354 /* assert-macros.h */,
+				277A048B20AC959E00970354 /* btree.h */,
+				277A048D20AC959E00970354 /* coap.h */,
+				277A048F20AC959E00970354 /* fasthash.h */,
+				277A049020AC959E00970354 /* libnyoci.h */,
+				277A04B220AC959F00970354 /* ll.h */,
+				277A04B720AC959F00970354 /* nyoci-async.h */,
+				277A04B820AC959F00970354 /* nyoci-config.h */,
+				277A04BA20AC959F00970354 /* nyoci-defaults.h */,
+				277A04BC20AC959F00970354 /* nyoci-dupe.h */,
+				277A04BD20AC959F00970354 /* nyoci-helpers.h */,
+				277A04BF20AC959F00970354 /* nyoci-internal.h */,
+				277A04C020AC959F00970354 /* nyoci-logging.h */,
+				277A04C220AC959F00970354 /* nyoci-missing.h */,
+				277A04C420AC959F00970354 /* nyoci-observable.h */,
+				277A04C520AC959F00970354 /* nyoci-opts.h */,
+				277A04C720AC959F00970354 /* nyoci-plat-net-func.h */,
+				277A04C820AC959F00970354 /* nyoci-plat-tls-func.h */,
+				277A04CA20AC959F00970354 /* nyoci-session.h */,
+				277A04CB20AC959F00970354 /* nyoci-status.h */,
+				277A04CD20AC959F00970354 /* nyoci-timer.h */,
+				277A04CF20AC959F00970354 /* nyoci-transaction.h */,
+				277A04D320AC959F00970354 /* string-utils.h */,
+				277A04D520AC959F00970354 /* url-helpers.h */,
+			);
+			path = libnyoci;
+			sourceTree = "<group>";
+		};
+		277A04D620AC959F00970354 /* libnyociextra */ = {
+			isa = PBXGroup;
+			children = (
+				277A04EB20AC959F00970354 /* nyoci-list.c */,
+				277A04EE20AC959F00970354 /* nyoci-node-router.c */,
+				277A04F220AC959F00970354 /* nyoci-var-handler.c */,
+				277A04E420AC959F00970354 /* libnyociextra.h */,
+				277A04EF20AC959F00970354 /* nyoci-node-router.h */,
+				277A04F320AC959F00970354 /* nyoci-var-handler.h */,
+			);
+			path = libnyociextra;
+			sourceTree = "<group>";
+		};
+		277A04F920AC959F00970354 /* missing */ = {
+			isa = PBXGroup;
+			children = (
+				277A04FA20AC959F00970354 /* fgetln.h */,
+				277A04FB20AC959F00970354 /* getline.c */,
+				277A04FF20AC959F00970354 /* strlcat */,
+				277A050920AC959F00970354 /* strlcpy */,
+			);
+			path = missing;
+			sourceTree = "<group>";
+		};
+		277A04FF20AC959F00970354 /* strlcat */ = {
+			isa = PBXGroup;
+			children = (
+				277A050620AC959F00970354 /* strlcat.c */,
+				277A050720AC959F00970354 /* strlcat.h */,
+				277A050820AC959F00970354 /* strlcat_test.c */,
+			);
+			path = strlcat;
+			sourceTree = "<group>";
+		};
+		277A050920AC959F00970354 /* strlcpy */ = {
+			isa = PBXGroup;
+			children = (
+				277A051020AC959F00970354 /* strlcpy.c */,
+				277A051120AC959F00970354 /* strlcpy.h */,
+				277A051220AC959F00970354 /* strlcpy_test.c */,
+			);
+			path = strlcpy;
+			sourceTree = "<group>";
+		};
+		277A051320AC959F00970354 /* nyocictl */ = {
+			isa = PBXGroup;
+			children = (
+				277A051E20AC959F00970354 /* cmd_delete.c */,
+				277A052020AC959F00970354 /* cmd_get.c */,
+				277A052220AC959F00970354 /* cmd_list.c */,
+				277A052420AC959F00970354 /* cmd_post.c */,
+				277A052620AC959F00970354 /* cmd_repeat.c */,
+				277A052820AC959F00970354 /* help.c */,
+				277A052A20AC959F00970354 /* main.c */,
+				277A051F20AC959F00970354 /* cmd_delete.h */,
+				277A052120AC959F00970354 /* cmd_get.h */,
+				277A052320AC959F00970354 /* cmd_list.h */,
+				277A052520AC959F00970354 /* cmd_post.h */,
+				277A052720AC959F00970354 /* cmd_repeat.h */,
+				277A052920AC959F00970354 /* help.h */,
+				277A053620AC959F00970354 /* nyocictl.h */,
+			);
+			path = nyocictl;
+			sourceTree = "<group>";
+		};
+		277A053720AC959F00970354 /* plat-net */ = {
+			isa = PBXGroup;
+			children = (
+				277A053820AC959F00970354 /* posix */,
+			);
+			path = "plat-net";
+			sourceTree = "<group>";
+		};
+		277A053820AC959F00970354 /* posix */ = {
+			isa = PBXGroup;
+			children = (
+				277A054520AC959F00970354 /* nyoci-plat-net-internal.h */,
+				277A054620AC959F00970354 /* nyoci-plat-net.c */,
+				277A054720AC959F00970354 /* nyoci-plat-net.h */,
+			);
+			path = posix;
+			sourceTree = "<group>";
+		};
+		277A055120AC959F00970354 /* plat-tls */ = {
+			isa = PBXGroup;
+			children = (
+				277A055220AC959F00970354 /* openssl */,
+			);
+			path = "plat-tls";
+			sourceTree = "<group>";
+		};
+		277A055220AC959F00970354 /* openssl */ = {
+			isa = PBXGroup;
+			children = (
+				277A055820AC959F00970354 /* nyoci-plat-tls.c */,
+				277A055920AC959F00970354 /* nyoci-plat-tls.h */,
+			);
+			path = openssl;
+			sourceTree = "<group>";
+		};
+		277A055A20AC959F00970354 /* plugtest */ = {
+			isa = PBXGroup;
+			children = (
+				277A056220AC959F00970354 /* main-client.c */,
+				277A056420AC959F00970354 /* main-server.c */,
+				277A056B20AC959F00970354 /* plugtest-server.c */,
+				277A056C20AC959F00970354 /* plugtest-server.h */,
+				277A056F20AC959F00970354 /* selftest.sh */,
+			);
+			path = plugtest;
+			sourceTree = "<group>";
+		};
+		277A057120AC959F00970354 /* tests */ = {
+			isa = PBXGroup;
+			children = (
+				277A057720AC959F00970354 /* test-concurrency.c */,
+			);
+			path = tests;
+			sourceTree = "<group>";
+		};
+		277A062820AC9B1E00970354 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				277A063F20ACAA8400970354 /* libreadline.tbd */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		277A043520AC954900970354 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				277A05E020AC959F00970354 /* fgetln.h in Headers */,
+				277A05B220AC959F00970354 /* nyoci-async.h in Headers */,
+				277A060720AC959F00970354 /* nyoci-plat-net.h in Headers */,
+				277A05C220AC959F00970354 /* nyoci-plat-tls-func.h in Headers */,
+				277A05F220AC959F00970354 /* cmd_post.h in Headers */,
+				277A059A20AC959F00970354 /* btree.h in Headers */,
+				277A05B920AC959F00970354 /* nyoci-internal.h in Headers */,
+				277A05F620AC959F00970354 /* help.h in Headers */,
+				277A05DD20AC959F00970354 /* nyoci-var-handler.h in Headers */,
+				277A057A20AC959F00970354 /* config.h in Headers */,
+				277A05B720AC959F00970354 /* nyoci-helpers.h in Headers */,
+				277A05EC20AC959F00970354 /* cmd_delete.h in Headers */,
+				277A05BA20AC959F00970354 /* nyoci-logging.h in Headers */,
+				277A060520AC959F00970354 /* nyoci-plat-net-internal.h in Headers */,
+				277A059E20AC959F00970354 /* fasthash.h in Headers */,
+				277A05DA20AC959F00970354 /* nyoci-node-router.h in Headers */,
+				277A05B320AC959F00970354 /* nyoci-config.h in Headers */,
+				277A05CC20AC959F00970354 /* string-utils.h in Headers */,
+				277A060E20AC959F00970354 /* nyoci-plat-tls.h in Headers */,
+				277A05D520AC959F00970354 /* libnyociextra.h in Headers */,
+				277A059F20AC959F00970354 /* libnyoci.h in Headers */,
+				277A05B620AC959F00970354 /* nyoci-dupe.h in Headers */,
+				277A05C120AC959F00970354 /* nyoci-plat-net-func.h in Headers */,
+				277A05C920AC959F00970354 /* nyoci-transaction.h in Headers */,
+				277A05AF20AC959F00970354 /* ll.h in Headers */,
+				277A05CE20AC959F00970354 /* url-helpers.h in Headers */,
+				277A05F420AC959F00970354 /* cmd_repeat.h in Headers */,
+				277A05EE20AC959F00970354 /* cmd_get.h in Headers */,
+				277A05C720AC959F00970354 /* nyoci-timer.h in Headers */,
+				277A05E920AC959F00970354 /* strlcpy.h in Headers */,
+				277A059820AC959F00970354 /* assert-macros.h in Headers */,
+				277A05E520AC959F00970354 /* strlcat.h in Headers */,
+				277A05BF20AC959F00970354 /* nyoci-opts.h in Headers */,
+				277A05BE20AC959F00970354 /* nyoci-observable.h in Headers */,
+				277A05C420AC959F00970354 /* nyoci-session.h in Headers */,
+				277A05BC20AC959F00970354 /* nyoci-missing.h in Headers */,
+				277A060020AC959F00970354 /* nyocictl.h in Headers */,
+				277A061520AC959F00970354 /* plugtest-server.h in Headers */,
+				277A061920AC959F00970354 /* version.h in Headers */,
+				277A05C520AC959F00970354 /* nyoci-status.h in Headers */,
+				277A059C20AC959F00970354 /* coap.h in Headers */,
+				277A05B420AC959F00970354 /* nyoci-defaults.h in Headers */,
+				277A05F020AC959F00970354 /* cmd_list.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		277A043620AC954900970354 /* nyoci */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 277A043B20AC954900970354 /* Build configuration list for PBXNativeTarget "nyoci" */;
+			buildPhases = (
+				277A043320AC954900970354 /* Sources */,
+				277A043420AC954900970354 /* Frameworks */,
+				277A043520AC954900970354 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = nyoci;
+			productName = nyociti;
+			productReference = 277A043720AC954900970354 /* libnyoci.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		277A061D20AC9B0200970354 /* example-server */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 277A062220AC9B0200970354 /* Build configuration list for PBXNativeTarget "example-server" */;
+			buildPhases = (
+				277A061A20AC9B0200970354 /* Sources */,
+				277A061B20AC9B0200970354 /* Frameworks */,
+				277A061C20AC9B0200970354 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				277A062720AC9B1900970354 /* PBXTargetDependency */,
+			);
+			name = "example-server";
+			productName = "example-server";
+			productReference = 277A061E20AC9B0200970354 /* example-server */;
+			productType = "com.apple.product-type.tool";
+		};
+		277A062D20AC9C5000970354 /* nyocictl */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 277A063220AC9C5000970354 /* Build configuration list for PBXNativeTarget "nyocictl" */;
+			buildPhases = (
+				277A062A20AC9C5000970354 /* Sources */,
+				277A062B20AC9C5000970354 /* Frameworks */,
+				277A062C20AC9C5000970354 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				277A063D20AC9C6300970354 /* PBXTargetDependency */,
+			);
+			name = nyocictl;
+			productName = nyocictl;
+			productReference = 277A062E20AC9C5000970354 /* nyocictl */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		277A042F20AC954900970354 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0930;
+				ORGANIZATIONNAME = Couchbase;
+				TargetAttributes = {
+					277A043620AC954900970354 = {
+						CreatedOnToolsVersion = 9.3;
+					};
+					277A061D20AC9B0200970354 = {
+						CreatedOnToolsVersion = 9.3;
+					};
+					277A062D20AC9C5000970354 = {
+						CreatedOnToolsVersion = 9.3;
+					};
+				};
+			};
+			buildConfigurationList = 277A043220AC954900970354 /* Build configuration list for PBXProject "nyoci" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 277A042E20AC954900970354;
+			productRefGroup = 277A043820AC954900970354 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				277A043620AC954900970354 /* nyoci */,
+				277A061D20AC9B0200970354 /* example-server */,
+				277A062D20AC9C5000970354 /* nyocictl */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		277A043320AC954900970354 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				277A05D720AC959F00970354 /* nyoci-list.c in Sources */,
+				277A05E120AC959F00970354 /* getline.c in Sources */,
+				277A05C020AC959F00970354 /* nyoci-outbound.c in Sources */,
+				277A060620AC959F00970354 /* nyoci-plat-net.c in Sources */,
+				277A05E420AC959F00970354 /* strlcat.c in Sources */,
+				277A05E820AC959F00970354 /* strlcpy.c in Sources */,
+				277A05C320AC959F00970354 /* nyoci-session.c in Sources */,
+				277A059B20AC959F00970354 /* coap.c in Sources */,
+				277A05C620AC959F00970354 /* nyoci-timer.c in Sources */,
+				277A05EA20AC959F00970354 /* strlcpy_test.c in Sources */,
+				277A059D20AC959F00970354 /* fasthash.c in Sources */,
+				277A05BB20AC959F00970354 /* nyoci-missing.c in Sources */,
+				277A05BD20AC959F00970354 /* nyoci-observable.c in Sources */,
+				277A05B120AC959F00970354 /* nyoci-async.c in Sources */,
+				277A05CB20AC959F00970354 /* string-utils.c in Sources */,
+				277A05B520AC959F00970354 /* nyoci-dupe.c in Sources */,
+				277A05CA20AC959F00970354 /* nyoci.c in Sources */,
+				277A05CD20AC959F00970354 /* url-helpers.c in Sources */,
+				277A05B820AC959F00970354 /* nyoci-inbound.c in Sources */,
+				277A059920AC959F00970354 /* btree.c in Sources */,
+				277A05E620AC959F00970354 /* strlcat_test.c in Sources */,
+				277A05D920AC959F00970354 /* nyoci-node-router.c in Sources */,
+				277A05C820AC959F00970354 /* nyoci-transaction.c in Sources */,
+				277A05DC20AC959F00970354 /* nyoci-var-handler.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		277A061A20AC9B0200970354 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				277A062520AC9B0C00970354 /* example-2.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		277A062A20AC9C5000970354 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				277A063620AC9C5500970354 /* cmd_get.c in Sources */,
+				277A063A20AC9C5500970354 /* help.c in Sources */,
+				277A063720AC9C5500970354 /* cmd_list.c in Sources */,
+				277A063B20AC9C5500970354 /* main.c in Sources */,
+				277A063920AC9C5500970354 /* cmd_repeat.c in Sources */,
+				277A063820AC9C5500970354 /* cmd_post.c in Sources */,
+				277A063520AC9C5500970354 /* cmd_delete.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		277A062720AC9B1900970354 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 277A043620AC954900970354 /* nyoci */;
+			targetProxy = 277A062620AC9B1900970354 /* PBXContainerItemProxy */;
+		};
+		277A063D20AC9C6300970354 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 277A043620AC954900970354 /* nyoci */;
+			targetProxy = 277A063C20AC9C6300970354 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		277A043920AC954900970354 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					HAVE_CONFIG_H,
+					DEBUG,
+					VERBOSE_DEBUG,
+				);
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SYSTEM_HEADER_SEARCH_PATHS = ../src;
+				WARNING_CFLAGS = "-Wno-expansion-to-defined";
+			};
+			name = Debug;
+		};
+		277A043A20AC954900970354 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					HAVE_CONFIG_H,
+					NDEBUG,
+				);
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+				SYSTEM_HEADER_SEARCH_PATHS = ../src;
+				WARNING_CFLAGS = "-Wno-expansion-to-defined";
+			};
+			name = Release;
+		};
+		277A043C20AC954900970354 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = N2Q372V7W2;
+				EXECUTABLE_PREFIX = lib;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					BUILDING_LIBNYOCI,
+					"$(inherited)",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		277A043D20AC954900970354 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = N2Q372V7W2;
+				EXECUTABLE_PREFIX = lib;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					BUILDING_LIBNYOCI,
+					"$(inherited)",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		277A062320AC9B0200970354 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = NO;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = N2Q372V7W2;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		277A062420AC9B0200970354 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = NO;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = N2Q372V7W2;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		277A063320AC9C5000970354 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = N2Q372V7W2;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		277A063420AC9C5000970354 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = N2Q372V7W2;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		277A043220AC954900970354 /* Build configuration list for PBXProject "nyoci" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				277A043920AC954900970354 /* Debug */,
+				277A043A20AC954900970354 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		277A043B20AC954900970354 /* Build configuration list for PBXNativeTarget "nyoci" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				277A043C20AC954900970354 /* Debug */,
+				277A043D20AC954900970354 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		277A062220AC9B0200970354 /* Build configuration list for PBXNativeTarget "example-server" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				277A062320AC9B0200970354 /* Debug */,
+				277A062420AC9B0200970354 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		277A063220AC9C5000970354 /* Build configuration list for PBXNativeTarget "nyocictl" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				277A063320AC9C5000970354 /* Debug */,
+				277A063420AC9C5000970354 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 277A042F20AC954900970354 /* Project object */;
+}
