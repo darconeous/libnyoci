@@ -61,7 +61,7 @@ struct nyoci_s gNyociInstance;
 #include <pthread.h>
 static pthread_key_t nyoci_current_instance_key;
 static pthread_once_t nyoci_current_instance_once;
-void
+static void
 nyoci_current_instance_setup(void)
 {
 	pthread_key_create(&nyoci_current_instance_key, NULL);

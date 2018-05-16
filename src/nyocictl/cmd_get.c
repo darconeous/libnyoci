@@ -181,7 +181,7 @@ bail:
 	return NYOCI_STATUS_OK;
 }
 
-nyoci_status_t
+static nyoci_status_t
 resend_get_request(void* context) {
 	nyoci_status_t status = 0;
 
@@ -231,7 +231,9 @@ send_get_request(
 		flags |= NYOCI_TRANSACTION_KEEPALIVE;
 	}
 
-	nyoci_transaction_end(nyoci,&transaction);
+	if (transaction.active) {
+		nyoci_transaction_end(nyoci,&transaction);
+	}
 	nyoci_transaction_init(
 		&transaction,
 		flags, // Flags
@@ -371,7 +373,9 @@ tool_cmd_get(
 	}
 
 bail:
-	nyoci_transaction_end(nyoci,&transaction);
+	if (transaction.active) {
+		nyoci_transaction_end(nyoci,&transaction);
+	}
 	signal(SIGINT, previous_sigint_handler);
 	url_data = NULL;
 	return gRet;

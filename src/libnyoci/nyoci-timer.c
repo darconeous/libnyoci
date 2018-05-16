@@ -178,7 +178,7 @@ nyoci_invalidate_timer(
 
 #if NYOCI_DEBUG_TIMERS || VERBOSE_DEBUG
 void
-nyoci_dump_all_timers(nyoci_t self) {
+static nyoci_dump_all_timers(nyoci_t self) {
 	nyoci_timer_t iter;
 
 	if (self->timers) {

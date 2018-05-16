@@ -125,7 +125,7 @@ bail:
 }
 
 
-nyoci_status_t
+static nyoci_status_t
 resend_post_request(struct post_request_s *request) {
 	nyoci_status_t status = 0;
 
@@ -216,7 +216,7 @@ tool_cmd_post(
 
 	BEGIN_LONG_ARGUMENTS(gRet)
 	HANDLE_LONG_ARGUMENT("include") post_show_headers = true;
-	HANDLE_LONG_ARGUMENT("outbound-slice-size") outbound_slice_size = strtol(argv[++i], NULL, 0);
+	HANDLE_LONG_ARGUMENT("outbound-slice-size") outbound_slice_size = (int)strtol(argv[++i], NULL, 0);
 	HANDLE_LONG_ARGUMENT("content-type") content_type = coap_content_type_from_cstr(argv[++i]);
 	HANDLE_LONG_ARGUMENT("content-format") content_type = coap_content_type_from_cstr(argv[++i]);
 	HANDLE_LONG_ARGUMENT("non") post_tt = COAP_TRANS_TYPE_NONCONFIRMABLE;
