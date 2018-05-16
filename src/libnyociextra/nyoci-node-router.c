@@ -152,7 +152,7 @@ bail:
 // MARK: -
 // MARK: Node Funcs
 
-void
+static void
 nyoci_node_dealloc(nyoci_node_t x) {
 #if NYOCI_AVOID_MALLOC
 	x->finalize = NULL;

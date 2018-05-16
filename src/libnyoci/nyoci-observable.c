@@ -261,7 +261,7 @@ retry_sending_event(struct nyoci_observer_s* observer)
 	);
 #endif
 
-	status = nyoci_handle_request(self);
+	status = nyoci_handle_request();
 	require(!status || status == NYOCI_STATUS_NOT_FOUND || status == NYOCI_STATUS_NOT_ALLOWED, bail);
 
 	if (status) {

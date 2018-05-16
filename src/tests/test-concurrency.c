@@ -68,7 +68,7 @@ request_handler(void* context) {
 nyoci_status_t
 test_concurrency_thread_resend(void* context)
 {
-	struct test_concurrency_thread_s* obj = (struct test_concurrency_thread_s*)context;
+//	struct test_concurrency_thread_s* obj = (struct test_concurrency_thread_s*)context;
 	nyoci_status_t status = 0;
 
 	status = nyoci_outbound_begin(

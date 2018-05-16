@@ -69,7 +69,7 @@ static char* list_data;
 static coap_size_t list_data_size;
 static struct nyoci_transaction_s transaction;
 
-void
+static void
 parse_link_format(char* content, coap_size_t content_length, void* context) {
 	char *iter = content;
 	char *end = content + content_length;
@@ -453,7 +453,7 @@ tool_cmd_list(
 	HANDLE_LONG_ARGUMENT("follow") redirect_count = 10;
 	HANDLE_LONG_ARGUMENT("slice-size") size_request =
 		htons(strtol(argv[++i], NULL, 0));
-	HANDLE_LONG_ARGUMENT("timeout") timeout_cms = strtol(argv[++i], NULL, 0);
+	HANDLE_LONG_ARGUMENT("timeout") timeout_cms = (int)strtol(argv[++i], NULL, 0);
 	HANDLE_LONG_ARGUMENT("filename-only") list_filename_only = true;
 
 	HANDLE_LONG_ARGUMENT("help") {
@@ -464,7 +464,7 @@ tool_cmd_list(
 	BEGIN_SHORT_ARGUMENTS(gRet)
 	HANDLE_SHORT_ARGUMENT('i') list_show_headers = true;
 	HANDLE_SHORT_ARGUMENT('f') redirect_count = 10;
-	HANDLE_SHORT_ARGUMENT('t') timeout_cms = strtol(argv[++i], NULL, 0);
+	HANDLE_SHORT_ARGUMENT('t') timeout_cms = (int)strtol(argv[++i], NULL, 0);
 
 	HANDLE_SHORT_ARGUMENT2('h', '?') {
 		print_arg_list_help(option_list, argv[0], "[args] <uri>");

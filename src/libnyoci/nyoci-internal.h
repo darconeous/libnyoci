@@ -149,9 +149,9 @@ struct nyoci_s {
 //! Initializes an LibNyoci instance. Does not allocate any memory.
 NYOCI_API_EXTERN nyoci_t nyoci_init(nyoci_t self);
 
-NYOCI_INTERNAL_EXTERN nyoci_status_t nyoci_handle_request();
+NYOCI_INTERNAL_EXTERN nyoci_status_t nyoci_handle_request(void);
 
-NYOCI_INTERNAL_EXTERN nyoci_status_t nyoci_handle_response();
+NYOCI_INTERNAL_EXTERN nyoci_status_t nyoci_handle_response(void);
 
 NYOCI_INTERNAL_EXTERN nyoci_t nyoci_plat_init(nyoci_t self);
 NYOCI_INTERNAL_EXTERN void nyoci_plat_finalize(nyoci_t self);
@@ -159,6 +159,10 @@ NYOCI_INTERNAL_EXTERN void nyoci_plat_finalize(nyoci_t self);
 NYOCI_INTERNAL_EXTERN nyoci_status_t nyoci_outbound_set_var_content_int(int v);
 NYOCI_INTERNAL_EXTERN nyoci_status_t nyoci_outbound_set_var_content_unsigned_int(unsigned int v);
 NYOCI_INTERNAL_EXTERN nyoci_status_t nyoci_outbound_set_var_content_unsigned_long_int(unsigned long int v);
+
+#if NYOCI_CONF_ENABLE_VHOSTS
+NYOCI_INTERNAL_EXTERN nyoci_status_t nyoci_vhost_route(nyoci_request_handler_func* func, void** context);
+#endif
 
 
 NYOCI_END_C_DECLS

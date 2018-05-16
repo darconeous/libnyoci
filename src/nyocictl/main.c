@@ -69,7 +69,7 @@ static arg_list_item_t option_list[] = {
 	{ 0 }
 };
 
-void print_commands();
+void print_commands(void);
 
 static int
 tool_cmd_help(
@@ -300,7 +300,7 @@ bail:
 static bool history_disabled;
 #endif
 
-void process_input_line(char *l) {
+static void process_input_line(char *l) {
 	char *inputstring;
 	char *argv2[100];
 	char **ap = argv2;
@@ -355,7 +355,7 @@ static char* get_current_prompt() {
 	return prompt;
 }
 
-void process_input_readline(char *l) {
+static void process_input_readline(char *l) {
 	process_input_line(l);
 	if(istty) {
 #if HAVE_RL_SET_PROMPT
@@ -372,12 +372,13 @@ void process_input_readline(char *l) {
 
 #if HAVE_LIBREADLINE
 
-char *
+static char *
 nyoci_command_generator(
 	const char *text,
 	int state
 ) {
-	static int list_index, len;
+	static int list_index;
+	static size_t len;
 	const char *name;
 
 	/* If this is a new word to complete, initialize now.  This includes
@@ -402,7 +403,7 @@ nyoci_command_generator(
 	return ((char *)NULL);
 }
 
-char *
+static char *
 nyoci_directory_generator(
 	const char *text,
 	int state
@@ -425,7 +426,7 @@ nyoci_directory_generator(
 	 variable to 0. */
 	if (!state)
 	{
-		int i;
+		size_t i;
 
 		if(temp_file)
 			fclose(temp_file);
@@ -534,7 +535,7 @@ bail:
 	return ret;
 }
 
-char **
+static char **
 nyoci_attempted_completion (
 	const char *text,
 	int start,
@@ -598,7 +599,7 @@ bail:
 #define PACKAGE_VERSION "0.0"
 #endif
 
-void
+static void
 print_version() {
 	printf(PACKAGE_TARNAME"ctl "PACKAGE_VERSION"\n");
 }
@@ -612,8 +613,10 @@ main(
 ) {
 	int i, debug_mode = 0;
 	uint16_t port = 61616;
+#if NYOCI_DTLS
 	uint16_t ssl_port = 61617;
 	int ssl_ret;
+#endif
 
 #if NYOCI_DTLS
 #if NYOCI_PLAT_TLS_OPENSSL && HAVE_OPENSSL_SSL_CONF_CTX_NEW
@@ -665,7 +668,7 @@ main(
 #endif
 #endif
 
-	srandom(time(NULL));
+	srandom((unsigned)time(NULL));
 
 	BEGIN_LONG_ARGUMENTS(gRet)
 #if NYOCI_PLAT_TLS_OPENSSL && HAVE_OPENSSL_SSL_CONF_CTX_NEW
