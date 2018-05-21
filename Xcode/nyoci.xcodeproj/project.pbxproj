@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		277A057A20AC959F00970354 /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A044020AC959E00970354 /* config.h */; };
 		277A059820AC959F00970354 /* assert-macros.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A048920AC959E00970354 /* assert-macros.h */; };
 		277A059920AC959F00970354 /* btree.c in Sources */ = {isa = PBXBuildFile; fileRef = 277A048A20AC959E00970354 /* btree.c */; };
 		277A059A20AC959F00970354 /* btree.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A048B20AC959E00970354 /* btree.h */; };
@@ -19,7 +18,6 @@
 		277A05AF20AC959F00970354 /* ll.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A04B220AC959F00970354 /* ll.h */; };
 		277A05B120AC959F00970354 /* nyoci-async.c in Sources */ = {isa = PBXBuildFile; fileRef = 277A04B620AC959F00970354 /* nyoci-async.c */; };
 		277A05B220AC959F00970354 /* nyoci-async.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A04B720AC959F00970354 /* nyoci-async.h */; };
-		277A05B320AC959F00970354 /* nyoci-config.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A04B820AC959F00970354 /* nyoci-config.h */; };
 		277A05B420AC959F00970354 /* nyoci-defaults.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A04BA20AC959F00970354 /* nyoci-defaults.h */; };
 		277A05B520AC959F00970354 /* nyoci-dupe.c in Sources */ = {isa = PBXBuildFile; fileRef = 277A04BB20AC959F00970354 /* nyoci-dupe.c */; };
 		277A05B620AC959F00970354 /* nyoci-dupe.h in Headers */ = {isa = PBXBuildFile; fileRef = 277A04BC20AC959F00970354 /* nyoci-dupe.h */; };
@@ -127,7 +125,6 @@
 
 /* Begin PBXFileReference section */
 		277A043720AC954900970354 /* libnyoci.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libnyoci.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		277A044020AC959E00970354 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
 		277A045120AC959E00970354 /* example-1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "example-1.c"; sourceTree = "<group>"; };
 		277A045420AC959E00970354 /* example-2.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "example-2.c"; sourceTree = "<group>"; };
 		277A045720AC959E00970354 /* example-3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "example-3.c"; sourceTree = "<group>"; };
@@ -144,7 +141,6 @@
 		277A04B220AC959F00970354 /* ll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ll.h; sourceTree = "<group>"; };
 		277A04B620AC959F00970354 /* nyoci-async.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "nyoci-async.c"; sourceTree = "<group>"; };
 		277A04B720AC959F00970354 /* nyoci-async.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "nyoci-async.h"; sourceTree = "<group>"; };
-		277A04B820AC959F00970354 /* nyoci-config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "nyoci-config.h"; sourceTree = "<group>"; };
 		277A04BA20AC959F00970354 /* nyoci-defaults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "nyoci-defaults.h"; sourceTree = "<group>"; };
 		277A04BB20AC959F00970354 /* nyoci-dupe.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "nyoci-dupe.c"; sourceTree = "<group>"; };
 		277A04BC20AC959F00970354 /* nyoci-dupe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "nyoci-dupe.h"; sourceTree = "<group>"; };
@@ -268,7 +264,6 @@
 		277A043E20AC959E00970354 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				277A044020AC959E00970354 /* config.h */,
 				277A057920AC959F00970354 /* version.h */,
 				277A044220AC959E00970354 /* examples */,
 				277A046220AC959E00970354 /* libnyoci */,
@@ -321,7 +316,6 @@
 				277A049020AC959E00970354 /* libnyoci.h */,
 				277A04B220AC959F00970354 /* ll.h */,
 				277A04B720AC959F00970354 /* nyoci-async.h */,
-				277A04B820AC959F00970354 /* nyoci-config.h */,
 				277A04BA20AC959F00970354 /* nyoci-defaults.h */,
 				277A04BC20AC959F00970354 /* nyoci-dupe.h */,
 				277A04BD20AC959F00970354 /* nyoci-helpers.h */,
@@ -486,14 +480,12 @@
 				277A05B920AC959F00970354 /* nyoci-internal.h in Headers */,
 				277A05F620AC959F00970354 /* help.h in Headers */,
 				277A05DD20AC959F00970354 /* nyoci-var-handler.h in Headers */,
-				277A057A20AC959F00970354 /* config.h in Headers */,
 				277A05B720AC959F00970354 /* nyoci-helpers.h in Headers */,
 				277A05EC20AC959F00970354 /* cmd_delete.h in Headers */,
 				277A05BA20AC959F00970354 /* nyoci-logging.h in Headers */,
 				277A060520AC959F00970354 /* nyoci-plat-net-internal.h in Headers */,
 				277A059E20AC959F00970354 /* fasthash.h in Headers */,
 				277A05DA20AC959F00970354 /* nyoci-node-router.h in Headers */,
-				277A05B320AC959F00970354 /* nyoci-config.h in Headers */,
 				277A05CC20AC959F00970354 /* string-utils.h in Headers */,
 				277A060E20AC959F00970354 /* nyoci-plat-tls.h in Headers */,
 				277A05D520AC959F00970354 /* libnyociextra.h in Headers */,
@@ -733,7 +725,6 @@
 					"$(inherited)",
 					HAVE_CONFIG_H,
 					DEBUG,
-					VERBOSE_DEBUG,
 				);
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -743,6 +734,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = macOS/;
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -804,6 +796,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = macOS/;
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
