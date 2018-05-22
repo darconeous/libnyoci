@@ -76,7 +76,7 @@ nyoci_transaction_compare_msg_id(
 }
 #endif
 
-nyoci_transaction_t
+static nyoci_transaction_t
 nyoci_transaction_find_via_msg_id(nyoci_t self, coap_msg_id_t msg_id) {
 	NYOCI_SINGLETON_SELF_HOOK;
 
@@ -96,7 +96,7 @@ nyoci_transaction_find_via_msg_id(nyoci_t self, coap_msg_id_t msg_id) {
 
 }
 
-nyoci_transaction_t
+static nyoci_transaction_t
 nyoci_transaction_find_via_token(nyoci_t self, coap_msg_id_t token) {
 	NYOCI_SINGLETON_SELF_HOOK;
 

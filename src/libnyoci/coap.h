@@ -113,6 +113,8 @@
 #define COAP_EXCHANGE_LIFETIME	((COAP_ACK_TIMEOUT * ((1<<COAP_MAX_RETRANSMIT) - 1) * COAP_ACK_RANDOM_FACTOR) + (2 * COAP_MAX_LATENCY) + COAP_PROCESSING_DELAY)
 #define COAP_NON_LIFETIME		(COAP_MAX_TRANSMIT_SPAN + COAP_MAX_LATENCY)
 
+NYOCI_BEGIN_C_DECLS
+
 typedef char coap_transaction_type_t;
 typedef uint16_t coap_msg_id_t;
 typedef uint16_t coap_code_t;
@@ -401,14 +403,18 @@ struct coap_block_info_s {
 
 NYOCI_API_EXTERN void coap_decode_block(struct coap_block_info_s* block_info, uint32_t block);
 
+NYOCI_END_C_DECLS
+
 #if !CONTIKI
 #include <stdio.h>
+NYOCI_BEGIN_C_DECLS
 NYOCI_API_EXTERN void coap_dump_header(
 	FILE*			outstream,
 	const char*		prefix,
 	const struct coap_header_s* header,
 	coap_size_t packet_size
 );
+NYOCI_END_C_DECLS
 #endif
 
 /*!	@} */

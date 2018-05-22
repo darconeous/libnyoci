@@ -398,6 +398,7 @@ nyoci_outbound_set_uri(
 	NYOCI_NON_RECURSIVE char* uri_copy;
 
 	memset((void*)&components, 0, sizeof(components));
+    toport = COAP_DEFAULT_PORT;
 	uri_copy = NULL;
 
 	require_action(uri, bail, ret = NYOCI_STATUS_INVALID_ARGUMENT);
