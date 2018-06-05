@@ -111,12 +111,15 @@ nyoci_schedule_timer(
 	assert(self!=NULL);
 	assert(timer!=NULL);
 
-	// Make sure we aren't already part of the list.
-	require(!timer->ll.next, bail);
-	require(!timer->ll.prev, bail);
-	require(self->timers != timer, bail);
+	// If we are already scheduled, go
+	// ahead and remove us from the list
+	if (nyoci_timer_is_scheduled(self, timer)) {
+		ll_remove((void**)&self->timers, (void*)timer);
+		DEBUG_PRINTF("Timer:%p: Rescheduling to fire in %dms ...",timer,cms);
+	} else {
+		DEBUG_PRINTF("Timer:%p: Scheduling to fire in %dms ...",timer,cms);
+	}
 
-	DEBUG_PRINTF("Timer:%p: Scheduling to fire in %dms ...",timer,cms);
 #if NYOCI_DEBUG_TIMERS
 	size_t previousTimerCount = ll_count(self->timers);
 #endif
