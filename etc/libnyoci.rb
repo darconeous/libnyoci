@@ -9,6 +9,7 @@ class Libnyoci < Formula
 
 #  depends_on 'readline' => :recommended
 #  depends_on 'curl' => :recommended
+   depends_on 'openssl@1.1' => :recommended
 
   if build.head?
     depends_on 'autoconf' => :build
@@ -22,6 +23,7 @@ class Libnyoci < Formula
     system "./configure",
       "--disable-debug",
       "--disable-dependency-tracking",
+      "--enable-tls",
       "--prefix=#{prefix}"
     system "make install"
   end

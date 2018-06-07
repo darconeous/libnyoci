@@ -41,8 +41,8 @@
 
 #include <stdio.h>
 
-#if !defined(HAVE_FGETLN)
-#define HAVE_FGETLN	defined(__DARWIN_C_LEVEL) && (__DARWIN_C_LEVEL>=__DARWIN_C_FULL)
+#if !defined(HAVE_FGETLN) && defined(__DARWIN_C_LEVEL) && (__DARWIN_C_LEVEL>=__DARWIN_C_FULL)
+#define HAVE_FGETLN	1
 #endif
 
 #if !defined(fgetln) && !HAVE_FGETLN

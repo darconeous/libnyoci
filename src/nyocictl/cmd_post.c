@@ -144,13 +144,18 @@ resend_post_request(struct post_request_s *request) {
 	status = nyoci_outbound_send();
 	require_noerr(status, bail);
 
-	if(status) {
-		check(!status);
-		fprintf(stderr,
-			"nyoci_outbound_send() returned error %d(%s).\n",
-			status,
-			nyoci_status_to_cstr(status));
-		goto bail;
+	switch (status) {
+		case NYOCI_STATUS_OK:
+		case NYOCI_STATUS_WAIT_FOR_SESSION:
+		case NYOCI_STATUS_WAIT_FOR_DNS:
+			break;
+		default:
+			check_noerr(status);
+			fprintf(stderr,
+				"nyoci_outbound_send() returned error %d(%s).\n",
+				status,
+				nyoci_status_to_cstr(status));
+			break;
 	}
 
 bail:

@@ -198,13 +198,18 @@ resend_get_request(void* context) {
 
 	status = nyoci_outbound_send();
 
-	if(status) {
-		check_noerr(status);
-		fprintf(stderr,
-			"nyoci_outbound_send() returned error %d(%s).\n",
-			status,
-			nyoci_status_to_cstr(status));
-		goto bail;
+	switch (status) {
+		case NYOCI_STATUS_OK:
+		case NYOCI_STATUS_WAIT_FOR_SESSION:
+		case NYOCI_STATUS_WAIT_FOR_DNS:
+			break;
+		default:
+			check_noerr(status);
+			fprintf(stderr,
+				"nyoci_outbound_send() returned error %d(%s).\n",
+				status,
+				nyoci_status_to_cstr(status));
+			break;
 	}
 
 bail:

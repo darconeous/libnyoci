@@ -172,8 +172,15 @@ Here are a few examples of how you can use it:
 
 ### List of Public Test Servers ###
 
+These servers run a subset of the plugtest suite:
+
  * <coap://coap.me/>
  * <coap://vs0.inf.ethz.ch/>
+
+These are other publically-accessable example/test servers:
+
+ * <coap://leshan.eclipse.org>/<coaps://leshan.eclipse.org>
+ * <coap://californium.eclipse.org>/<coaps://californium.eclipse.org>
 
 ## Authors and Significant Contributors ##
 
