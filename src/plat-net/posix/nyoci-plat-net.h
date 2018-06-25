@@ -40,7 +40,12 @@
 #include <arpa/inet.h>
 #include <sys/errno.h>
 #include <sys/types.h>
+
+#ifdef ESP_PLATFORM
+#include <sys/socket.h>
+#else
 #include <sys/select.h>
+#endif
 
 #if NYOCI_SINGLETON
 #define nyoci_plat_update_fdsets(self,...)		nyoci_plat_update_fdsets(__VA_ARGS__)

@@ -45,6 +45,12 @@
 #define NYOCI_PLAT_NET_POSIX_FAMILY		AF_INET6
 #endif
 
+#ifndef NYOCI_LWIP
+    #ifdef ESP_PLATFORM
+        #define NYOCI_LWIP
+    #endif
+#endif
+
 #if NYOCI_SINGLETON
 #define nyoci_internal_multicast_joinleave(self,...)		nyoci_internal_multicast_joinleave(__VA_ARGS__)
 #endif
@@ -53,6 +59,15 @@
 #define NYOCI_ADDR_NTOP(str, len, addr) inet_ntop(NYOCI_PLAT_NET_POSIX_FAMILY, addr , str, len-1)
 
 #if NYOCI_PLAT_NET_POSIX_FAMILY == AF_INET6
+#ifndef IN6_IS_ADDR_V4MAPPED
+    // IN6_IS_ADDR_V4MAPPED is not defined in lwIP. I copied this macro from macOS 10.13's in6.h. --snej
+    #define	IN6_IS_ADDR_V4MAPPED(a)		      \
+    	((*(const __uint32_t *)(const void *)(&(a)->s6_addr[0]) == 0) && \
+    	(*(const __uint32_t *)(const void *)(&(a)->s6_addr[4]) == 0) && \
+    	(*(const __uint32_t *)(const void *)(&(a)->s6_addr[8]) == \
+    	ntohl(0x0000ffff)))
+#endif
+
 #define ___nyoci_len		sin6_len
 #define ___nyoci_family	sin6_family
 #define NYOCI_IS_ADDR_MULTICAST(addrptr)	  (IN6_IS_ADDR_MULTICAST(addrptr) || (IN6_IS_ADDR_V4MAPPED(addrptr) && ((addrptr)->s6_addr[12] & 0xF0)==0xE0))
@@ -66,6 +81,7 @@
 #endif
 #ifdef IPV6_PKTINFO
 #define NYOCI_PKTINFO IPV6_PKTINFO
+#define nyoci_pktinfo in6_pktinfo
 #endif
 #define NYOCI_IPPROTO IPPROTO_IPV6
 
@@ -77,6 +93,7 @@
 #endif
 #ifdef IP_PKTINFO
 #define NYOCI_PKTINFO IP_PKTINFO
+#define nyoci_pktinfo in_pktinfo
 #endif
 #define NYOCI_IPPROTO IPPROTO_IPV4
 
@@ -90,7 +107,7 @@
 #endif // NYOCI_PLAT_NET_POSIX_FAMILY
 
 NYOCI_BEGIN_C_DECLS
-
+    
 struct nyoci_plat_s {
 	int						mcfd_v6;	//!< For multicast
 	int						mcfd_v4;	//!< For multicast
@@ -109,10 +126,8 @@ struct nyoci_plat_s {
 	nyoci_sockaddr_t			sockaddr_remote;
 	nyoci_session_type_t     session_type;
 
-#if NYOCI_PLAT_NET_POSIX_FAMILY==AF_INET6
-	struct in6_pktinfo		pktinfo;
-#elif NYOCI_PLAT_NET_POSIX_FAMILY==AF_INET
-	struct in_pktinfo		pktinfo;
+#ifdef NYOCI_PKTINFO
+	struct nyoci_pktinfo		pktinfo;
 #endif
 
 	char					outbound_packet_bytes[NYOCI_MAX_PACKET_LENGTH+1];

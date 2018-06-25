@@ -47,10 +47,8 @@
 #include "nyoci-missing.h"
 
 #include <stdio.h>
-#include <poll.h>
 #include <netdb.h>
 #include <sys/socket.h>
-#include <net/if.h>
 #include <sys/errno.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -58,8 +56,34 @@
 #include <sys/time.h>
 #include <sys/cdefs.h>
 #include <time.h>
-#include <sys/select.h>
-#include <poll.h>
+
+#ifdef NYOCI_LWIP
+	// Lightweight IP library <http://savannah.nongnu.org/projects/lwip/>
+    #define ipv6_mreq ip6_mreq
+	#define EAI_AGAIN TRY_AGAIN
+#else
+	#include <net/if.h>
+#endif
+
+#ifndef NYOCI_CAN_POLL
+    #ifdef NYOCI_LWIP
+        #define NYOCI_CAN_POLL 0
+    #else
+        #define NYOCI_CAN_POLL 1
+	#endif
+#endif
+
+#ifndef NYOCI_CAN_SENDMSG
+    #ifdef NYOCI_LWIP
+        #define NYOCI_CAN_SENDMSG 0
+    #else
+        #define NYOCI_CAN_SENDMSG 1
+	#endif
+#endif
+
+#if NYOCI_CAN_POLL
+    #include <poll.h>
+#endif
 
 #ifndef SOCKADDR_HAS_LENGTH_FIELD
 #if defined(__KAME__)
@@ -69,6 +93,35 @@
 
 #if NYOCI_SINGLETON
 #define nyoci_internal_join_multicast_group(self,...)		nyoci_internal_join_multicast_group(__VA_ARGS__)
+#endif
+
+
+#ifdef NYOCI_LWIP
+// lwIP does not have a gai_strerror() function
+__unused static const char*
+gai_strerror(int err)
+{
+	static const char* kMessages[] = {
+		"EAI_NONAME",	// 200
+		"EAI_SERVICE",	// 201
+		"EAI_FAIL",		// 202
+		"EAI_MEMORY",	// 203
+		"EAI_FAMILY",	// 204
+		NULL, NULL, NULL, NULL, NULL,
+		"HOST_NOT_FOUND",// 210
+		"NO_DATA",		// 211
+		"NO_RECOVERY",	// 212
+		"TRY_AGAIN",	// 213
+	};
+	if (err >= EAI_NONAME && err <= TRY_AGAIN) {
+		const char *msg = kMessages[err - EAI_NONAME];
+		if (msg)
+			return msg;
+	}
+	static char buffer[20];
+	sprintf(buffer, "netdb#%d", err);
+	return buffer;
+}
 #endif
 
 
@@ -111,7 +164,7 @@ static void fill_multicast_group(multicast_group_s * group, const struct sockadd
 
 	group->family = addr->sa_family;
 	group->group_size = group->family == AF_INET ? sizeof(struct ip_mreq) : sizeof(struct ipv6_mreq);
-
+    
 	if(group->family == AF_INET){
 		struct ip_mreq * mreq = &group->group.ip4_group;
 
@@ -121,7 +174,11 @@ static void fill_multicast_group(multicast_group_s * group, const struct sockadd
 	else{
 		struct ipv6_mreq * mreq = &group->group.ip6_group;
 
+#ifdef NYOCI_LWIP
+		mreq->ipv6mr_interface = in6addr_any;//TODO: enable specify the interface address;
+#else
 		mreq->ipv6mr_interface = interfaceIndex;
+#endif
 		mreq->ipv6mr_multiaddr = ((struct sockaddr_in6*)addr)->sin6_addr;
 	}
 
@@ -230,7 +287,7 @@ nyoci_plat_init(nyoci_t self) {
 #if NYOCI_PLAT_NET_POSIX_FAMILY == AF_INET6
 	if (self->plat.mcfd_v6 == -1) {
 		self->plat.mcfd_v6 = socket(AF_INET6, SOCK_DGRAM, 0);
-		check(self->plat.mcfd_v6 >= 0);
+		check_errno(self->plat.mcfd_v6 >= 0);
 
 		if (self->plat.mcfd_v6 >= 0 ) {
 			int btrue = 1;
@@ -247,7 +304,7 @@ nyoci_plat_init(nyoci_t self) {
 
 	if (self->plat.mcfd_v4 == -1) {
 		self->plat.mcfd_v4 = socket(AF_INET, SOCK_DGRAM, 0);
-		check(self->plat.mcfd_v4 >= 0);
+		check_errno(self->plat.mcfd_v4 >= 0);
 
 		if (self->plat.mcfd_v4 >= 0) {
 			int btrue = 1;
@@ -455,6 +512,7 @@ nyoci_plat_bind_to_port(
 	return nyoci_plat_bind_to_sockaddr(self, type, &saddr);
 }
 
+#if NYOCI_CAN_POLL
 int
 nyoci_plat_update_pollfds(
 	nyoci_t self,
@@ -495,6 +553,7 @@ nyoci_plat_update_pollfds(
 bail:
 	return ret;
 }
+#endif //NYOCI_CAN_POLL
 
 nyoci_status_t
 nyoci_plat_update_fdsets(
@@ -579,6 +638,7 @@ sendtofrom(
 		);
 		check(ret>0);
 	} else {
+#if NYOCI_CAN_SENDMSG
 		struct iovec iov = { (void *)data, len };
 		uint8_t cmbuf[CMSG_SPACE(sizeof (struct in6_pktinfo))];
 		struct cmsghdr *scmsgp;
@@ -617,11 +677,14 @@ sendtofrom(
 			pktinfo->ipi_addr = ((struct sockaddr_in*)saddr_from)->sin_addr;
 			pktinfo->ipi_ifindex = 0;
 		}
-
+        
 		ret = sendmsg(fd, &msg, flags);
 
 		check(ret > 0);
 		check_string(ret >= 0, strerror(errno));
+#else // !NYOCI_CAN_SENDMSG
+		abort(); //TODO
+#endif // NYOCI_CAN_SENDMSG
 	}
 
 	return ret;
@@ -795,8 +858,10 @@ nyoci_plat_wait(
 ) {
 	NYOCI_SINGLETON_SELF_HOOK;
 	nyoci_status_t ret = NYOCI_STATUS_OK;
-	struct pollfd polls[4];
 	int descriptors_ready;
+
+#if NYOCI_CAN_POLL
+	struct pollfd polls[4];
 	int poll_count;
 
 	poll_count = nyoci_plat_update_pollfds(self, polls, sizeof(polls)/sizeof(*polls));
@@ -815,6 +880,25 @@ nyoci_plat_wait(
 
 	descriptors_ready = poll(polls, poll_count, cms);
 
+#else // !NYOCI_CAN_POLL
+	fd_set reads, writes, errors;
+	int fdCount = 0;
+	FD_ZERO(&reads);
+	FD_ZERO(&writes);
+	FD_ZERO(&errors);
+	if (cms <= 0) {
+		cms = 3600 * MSEC_PER_SEC;
+	}
+	ret = nyoci_plat_update_fdsets(self, &reads, &writes, &errors, &fdCount, &cms);
+	if (ret != NYOCI_STATUS_OK)
+		goto bail;
+	struct timeval timeout = {cms / 1000, (cms % 1000) * 1000};
+
+	DEBUG_PRINTF("Calling select for %dms ...", cms);
+	descriptors_ready = select(fdCount, &reads, &writes, &errors, &timeout);
+	DEBUG_PRINTF("...select returned (%d events)", descriptors_ready);
+#endif // NYOCI_CAN_POLL
+
 	// Ensure that poll did not fail with an error.
 	require_action_string(descriptors_ready != -1,
 		bail,
@@ -830,6 +914,121 @@ bail:
 	return ret;
 }
 
+// wraps an IPv4 address in its IPv6 equivalent
+static struct sockaddr_in6
+wrapIPv4Address(const struct sockaddr_in *addr4)
+{
+	struct sockaddr_in6 addr6 = {
+		.sin6_len = sizeof(struct sockaddr_in6),
+		.sin6_family = AF_INET6,
+		.sin6_port = addr4->sin_port
+	};
+	addr6.sin6_addr.s6_addr[10] = addr6.sin6_addr.s6_addr[11] = 0xFF;
+	memcpy(&addr6.sin6_addr.s6_addr[12], &addr4->sin_addr, 4);
+	return addr6;
+}
+
+static nyoci_status_t
+nyoci_plat_process_fd(nyoci_t self, int fd)
+{
+	nyoci_status_t ret = 0;
+	char packet[NYOCI_MAX_PACKET_LENGTH+1];
+	nyoci_sockaddr_t remote_saddr = {};
+	nyoci_sockaddr_t local_saddr = {};
+	ssize_t packet_len = 0;
+
+#if NYOCI_CAN_POLL
+	char cmbuf[0x100];
+	struct iovec iov = { packet, NYOCI_MAX_PACKET_LENGTH };
+	struct msghdr msg = {
+		.msg_name = &remote_saddr,
+		.msg_namelen = sizeof(remote_saddr),
+		.msg_iov = &iov,
+		.msg_iovlen = 1,
+		.msg_control = cmbuf,
+		.msg_controllen = sizeof(cmbuf),
+	};
+	struct cmsghdr *cmsg;
+
+	packet_len = recvmsg(fd, &msg, 0);
+
+	require_action(packet_len > 0, bail, ret = NYOCI_STATUS_ERRNO);
+
+	packet[packet_len] = 0;
+
+	for (
+		 cmsg = CMSG_FIRSTHDR(&msg);
+		 cmsg != NULL;
+		 cmsg = CMSG_NXTHDR(&msg, cmsg)
+		 ) {
+		if (cmsg->cmsg_level != NYOCI_IPPROTO
+			|| cmsg->cmsg_type != NYOCI_PKTINFO
+			) {
+			continue;
+		}
+
+		// Preinitialize some of the fields.
+		local_saddr = remote_saddr;
+
+#if NYOCI_PLAT_NET_POSIX_FAMILY==AF_INET6
+		struct in6_pktinfo *pi = (struct in6_pktinfo *)CMSG_DATA(cmsg);
+		local_saddr.nyoci_addr = pi->ipi6_addr;
+		local_saddr.sin6_scope_id = pi->ipi6_ifindex;
+
+#elif NYOCI_PLAT_NET_POSIX_FAMILY==AF_INET
+		struct in_pktinfo *pi = (struct in_pktinfo *)CMSG_DATA(cmsg);
+		local_saddr.nyoci_addr = pi->ipi_addr;
+#endif
+
+		local_saddr.nyoci_port = htons(get_port_for_fd(fd));
+
+		self->plat.pktinfo = *pi;
+	}
+
+#else // !NYOCI_CAN_POLL
+	socklen_t addr_len = sizeof(remote_saddr);
+	packet_len = recvfrom(fd, packet, NYOCI_MAX_PACKET_LENGTH, 0,
+						  (struct sockaddr*)&remote_saddr, &addr_len);
+	require_action(packet_len > 0, bail, ret = NYOCI_STATUS_ERRNO);
+
+	packet[packet_len] = 0;
+
+	addr_len = sizeof(local_saddr);
+	getsockname(fd, (struct sockaddr*)&local_saddr, &addr_len);
+#endif // NYOCI_CAN_POLL
+
+#if NYOCI_PLAT_NET_POSIX_FAMILY == AF_INET6
+	if (remote_saddr.sin6_family == AF_INET) {
+		// If the incoming address is an IPv4 address (which happens on lwIP), convert it to a
+		// v4-mapped IPv6 address since that's the form we're expecting.
+		remote_saddr = wrapIPv4Address((struct sockaddr_in*)&remote_saddr);
+	}
+#endif
+
+	nyoci_set_current_instance(self);
+	nyoci_plat_set_remote_sockaddr(&remote_saddr);
+	nyoci_plat_set_local_sockaddr(&local_saddr);
+
+	if (self->plat.fd_udp == fd) {
+		nyoci_plat_set_session_type(NYOCI_SESSION_TYPE_UDP);
+
+		ret = nyoci_inbound_packet_process(self, packet, (coap_size_t)packet_len, 0);
+		require_noerr(ret, bail);
+
+#if NYOCI_DTLS
+	} else if (self->plat.fd_dtls == fd) {
+		nyoci_plat_set_session_type(NYOCI_SESSION_TYPE_DTLS);
+		nyoci_plat_tls_inbound_packet_process(
+											  self,
+											  packet,
+											  (coap_size_t)packet_len
+											  );
+#endif
+	}
+bail:
+	return ret;
+}
+
 nyoci_status_t
 nyoci_plat_process(
 	nyoci_t self
@@ -837,6 +1036,7 @@ nyoci_plat_process(
 	NYOCI_SINGLETON_SELF_HOOK;
 	nyoci_status_t ret = 0;
 
+#if NYOCI_CAN_POLL
 	int tmp;
 	struct pollfd polls[4];
 	int poll_count;
@@ -861,83 +1061,43 @@ nyoci_plat_process(
 
 	if(tmp > 0) {
 		for (tmp = 0; tmp < poll_count; tmp++) {
-			if (!polls[tmp].revents) {
-				continue;
-			} else {
-				char packet[NYOCI_MAX_PACKET_LENGTH+1];
-				nyoci_sockaddr_t remote_saddr = {};
-				nyoci_sockaddr_t local_saddr = {};
-				ssize_t packet_len = 0;
-				char cmbuf[0x100];
-				struct iovec iov = { packet, NYOCI_MAX_PACKET_LENGTH };
-				struct msghdr msg = {
-					.msg_name = &remote_saddr,
-					.msg_namelen = sizeof(remote_saddr),
-					.msg_iov = &iov,
-					.msg_iovlen = 1,
-					.msg_control = cmbuf,
-					.msg_controllen = sizeof(cmbuf),
-				};
-				struct cmsghdr *cmsg;
-
-				packet_len = recvmsg(polls[tmp].fd, &msg, 0);
-
-				require_action(packet_len > 0, bail, ret = NYOCI_STATUS_ERRNO);
-
-				packet[packet_len] = 0;
-
-				for (
-					cmsg = CMSG_FIRSTHDR(&msg);
-					cmsg != NULL;
-					cmsg = CMSG_NXTHDR(&msg, cmsg)
-				) {
-					if (cmsg->cmsg_level != NYOCI_IPPROTO
-						|| cmsg->cmsg_type != NYOCI_PKTINFO
-					) {
-						continue;
-					}
-
-					// Preinitialize some of the fields.
-					local_saddr = remote_saddr;
-
-#if NYOCI_PLAT_NET_POSIX_FAMILY==AF_INET6
-					struct in6_pktinfo *pi = (struct in6_pktinfo *)CMSG_DATA(cmsg);
-					local_saddr.nyoci_addr = pi->ipi6_addr;
-					local_saddr.sin6_scope_id = pi->ipi6_ifindex;
-
-#elif NYOCI_PLAT_NET_POSIX_FAMILY==AF_INET
-					struct in_pktinfo *pi = (struct in_pktinfo *)CMSG_DATA(cmsg);
-					local_saddr.nyoci_addr = pi->ipi_addr;
-#endif
-
-					local_saddr.nyoci_port = htons(get_port_for_fd(polls[tmp].fd));
-
-					self->plat.pktinfo = *pi;
-				}
-
-				nyoci_set_current_instance(self);
-				nyoci_plat_set_remote_sockaddr(&remote_saddr);
-				nyoci_plat_set_local_sockaddr(&local_saddr);
-
-				if (self->plat.fd_udp == polls[tmp].fd) {
-					nyoci_plat_set_session_type(NYOCI_SESSION_TYPE_UDP);
-
-					ret = nyoci_inbound_packet_process(self, packet, (coap_size_t)packet_len, 0);
-					require_noerr(ret, bail);
-
-#if NYOCI_DTLS
-				} else if (self->plat.fd_dtls == polls[tmp].fd) {
-					nyoci_plat_set_session_type(NYOCI_SESSION_TYPE_DTLS);
-					nyoci_plat_tls_inbound_packet_process(
-						self,
-						packet,
-						(coap_size_t)packet_len
-					);
-#endif
-				}
+			if (polls[tmp].revents) {
+				ret = nyoci_plat_process_fd(self, polls[tmp].fd);
+				if (ret != NYOCI_STATUS_OK)
+					goto bail;
 			}
 		}
 	}
+
+#else // !NYOCI_CAN_POLL
+	fd_set reads, writes, errors;
+	int fdCount = 0;
+	FD_ZERO(&reads);
+    FD_ZERO(&writes);
+	FD_ZERO(&errors);
+	ret = nyoci_plat_update_fdsets(self, &reads, &writes, &errors, &fdCount, NULL);
+	if (ret != NYOCI_STATUS_OK)
+		goto bail;
+
+	struct timeval zero_timeout = {0, 0};
+	int descriptors_ready = select(fdCount, &reads, &writes, &errors, &zero_timeout);
+	require_action_string(
+						  descriptors_ready >= 0,
+						  bail,
+						  ret = NYOCI_STATUS_ERRNO,
+						  strerror(errno)
+						  );
+
+	if (descriptors_ready > 0) {
+		for (int fd = 0; fd < fdCount; ++fd) {
+			if (FD_ISSET(fd, &reads)) {
+				ret = nyoci_plat_process_fd(self, fd);
+				if (ret != NYOCI_STATUS_OK)
+					goto bail;
+			}
+		}
+	}
+#endif // NYOCI_CAN_POLL
 
 	nyoci_handle_timers(self);
 

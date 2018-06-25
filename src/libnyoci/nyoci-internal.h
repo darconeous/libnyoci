@@ -50,6 +50,10 @@
 		((uint32_t)random_rand() ^ \
 			((uint32_t)random_rand() << 16))
 #define NYOCI_RANDOM_MAX			RAND_MAX
+#elif ESP_PLATFORM
+#include <sodium/randombytes.h>
+#define NYOCI_FUNC_RANDOM_UINT32()   randombytes_random()
+#define NYOCI_RANDOM_MAX			(uint32_t)(0xFFFFFFFF)
 #else
 #define NYOCI_FUNC_RANDOM_UINT32() \
 		((uint32_t)random() ^ \

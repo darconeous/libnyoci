@@ -34,40 +34,46 @@
 
 #if !VERBOSE_DEBUG
 
-#define CSTR(x)     (x)
+	#define CSTR(x)     (x)
 
-#ifndef DEBUG_PRINTF
-#define DEBUG_PRINTF(...)   do { } while(0)
-#endif
-#define NYOCI_DEBUG_OUT_FILE     stdout
+	#ifndef DEBUG_PRINTF
+	#define DEBUG_PRINTF(...)   do { } while(0)
+	#endif
+	#define NYOCI_DEBUG_OUT_FILE     stdout
 
 #elif defined(__AVR__)
-#define NYOCI_DEBUG_OUT_FILE     stdout
+	#define NYOCI_DEBUG_OUT_FILE     stdout
 
-#include <stdio.h>
-#include <avr/pgmspace.h>
-#define CSTR(x)     PSTR(x)
-#define DEBUG_PRINTF(...) \
+	#include <stdio.h>
+	#include <avr/pgmspace.h>
+	#define CSTR(x)     PSTR(x)
+	#define DEBUG_PRINTF(...) \
 	do { fprintf_P(NYOCI_DEBUG_OUT_FILE, __VA_ARGS__); fputc( \
-			'\n', \
-			NYOCI_DEBUG_OUT_FILE); } while(0)
+				'\n', \
+				NYOCI_DEBUG_OUT_FILE); } while(0)
 
-#else // __AVR__
-#define NYOCI_DEBUG_OUT_FILE     stderr
+#elif defined(ESP_PLATFORM)
+	#include <esp_log.h>
+	#define DEBUG_PRINTF(FMT, ...)   ESP_LOGI("nyoci", FMT, ##__VA_ARGS__)
+	#define NYOCI_DEBUG_OUT_FILE     stderr
+	#define CSTR(x)     x
 
-#include <stdio.h>
-#define CSTR(x)     (x)
-#if ASSERT_MACROS_USES_SYSLOG
-#include <syslog.h>
-#define DEBUG_PRINTF(...) syslog(7, __VA_ARGS__)
-#elif ASSERT_MACROS_USE_VANILLA_PRINTF
-#define DEBUG_PRINTF(...) \
-	do { printf(__VA_ARGS__); printf("\n"); } while(0)
 #else
-#define DEBUG_PRINTF(...) \
-	do { fprintf(NYOCI_DEBUG_OUT_FILE, __VA_ARGS__); fputc('\n', \
-			NYOCI_DEBUG_OUT_FILE); } while(0)
-#endif
+	#define NYOCI_DEBUG_OUT_FILE     stderr
+
+	#include <stdio.h>
+	#define CSTR(x)     (x)
+	#if ASSERT_MACROS_USES_SYSLOG
+		#include <syslog.h>
+		#define DEBUG_PRINTF(...) syslog(7, __VA_ARGS__)
+	#elif ASSERT_MACROS_USE_VANILLA_PRINTF
+		#define DEBUG_PRINTF(...) \
+			do { printf(__VA_ARGS__); printf("\n"); } while(0)
+	#else
+		#define DEBUG_PRINTF(...) \
+			do { fprintf(NYOCI_DEBUG_OUT_FILE, __VA_ARGS__); fputc('\n', \
+					NYOCI_DEBUG_OUT_FILE); } while(0)
+	#endif
 
 #endif
 

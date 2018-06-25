@@ -196,9 +196,9 @@
 		277A052920AC959F00970354 /* help.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = help.h; sourceTree = "<group>"; };
 		277A052A20AC959F00970354 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		277A053620AC959F00970354 /* nyocictl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = nyocictl.h; sourceTree = "<group>"; };
-		277A054520AC959F00970354 /* nyoci-plat-net-internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "nyoci-plat-net-internal.h"; sourceTree = "<group>"; };
-		277A054620AC959F00970354 /* nyoci-plat-net.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "nyoci-plat-net.c"; sourceTree = "<group>"; };
-		277A054720AC959F00970354 /* nyoci-plat-net.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "nyoci-plat-net.h"; sourceTree = "<group>"; };
+		277A054520AC959F00970354 /* nyoci-plat-net-internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "nyoci-plat-net-internal.h"; sourceTree = "<group>"; usesTabs = 0; };
+		277A054620AC959F00970354 /* nyoci-plat-net.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "nyoci-plat-net.c"; sourceTree = "<group>"; usesTabs = 0; };
+		277A054720AC959F00970354 /* nyoci-plat-net.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "nyoci-plat-net.h"; sourceTree = "<group>"; usesTabs = 0; };
 		277A055820AC959F00970354 /* nyoci-plat-tls.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "nyoci-plat-tls.c"; sourceTree = "<group>"; };
 		277A055920AC959F00970354 /* nyoci-plat-tls.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "nyoci-plat-tls.h"; sourceTree = "<group>"; };
 		277A056220AC959F00970354 /* main-client.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "main-client.c"; sourceTree = "<group>"; };

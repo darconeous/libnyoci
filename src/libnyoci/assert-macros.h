@@ -62,6 +62,7 @@
 #if !DEBUG || ASSERT_MACROS_SQUELCH
  #define assert_printf(fmt, ...) do { } while(0)
  #define check_string(c, s)   do { } while(0)
+ #define check_string_errno(c, s)   do { } while(0)
  #define require_action_string(c, l, a, s) \
 	do { if(!(c)) { \
 			 a; goto l; \
@@ -77,6 +78,12 @@
   #define assert_printf(fmt, ...) \
 	fprintf_P(assert_error_stream, \
 				PSTR(__FILE__ ":%d: "fmt"\n"), \
+				__LINE__, \
+				__VA_ARGS__)
+ #elif ESP_PLATFORM
+  #define assert_printf(fmt, ...) \
+    ESP_LOGE("nyoci", \
+				__FILE__ ":%d: "fmt"\n", \
 				__LINE__, \
 				__VA_ARGS__)
  #else
@@ -102,6 +109,9 @@
  #define check_string(c, s) \
    do { if(!(c)) assert_printf("Check Failed (%s)", \
 			s); } while(0)
+ #define check_string_errno(c, s) \
+   do { if(!(c)) assert_printf("Check Failed (%s), errno=%d", \
+			s, errno); } while(0)
  #define require_action_string(c, l, a, s) \
 	do { if(!(c)) { \
 		assert_printf("Requirement Failed (%s)", \
@@ -122,6 +132,7 @@
 #endif
 
  #define check(c)   check_string(c, # c)
+ #define check_errno(c)   check_string_errno(c, # c)
  #define check_noerr(c)   check((c) == 0)
  #define check_noerr_string(c, s)   check_string((c) == 0, s)
  #define require_quiet(c, l)   do { if(!(c)) goto l; } while(0)
