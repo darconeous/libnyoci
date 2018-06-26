@@ -54,11 +54,17 @@
 /* Set if OpenSSL is present */
 #undef HAVE_OPENSSL
 
+/* Set if OpenSSL has DTLSv1_2_method() */
+#undef HAVE_OPENSSL_DTLSV1_2_METHOD
+
 /* Set if OpenSSL has DTLSv1_method() */
 #undef HAVE_OPENSSL_DTLSV1_METHOD
 
 /* Set if OpenSSL has DTLS_method() */
 #undef HAVE_OPENSSL_DTLS_METHOD
+
+/* Set if OpenSSL has HMAC_CTX_new() */
+#undef HAVE_OPENSSL_HMAC_CTX_NEW
 
 /* Set if OpenSSL has SSL_CONF_CTX_new() */
 #undef HAVE_OPENSSL_SSL_CONF_CTX_NEW
