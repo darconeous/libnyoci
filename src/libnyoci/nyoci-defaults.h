@@ -313,7 +313,9 @@
 #define NYOCI_VARIABLE_MAX_KEY_LENGTH		(23)
 #endif
 
-#define NYOCI_DTLS							defined(NYOCI_PLAT_TLS)
+#if defined(NYOCI_PLAT_TLS)
+#define NYOCI_DTLS							1
+#endif
 
 /*****************************************************************************/
 // MARK: - Experimental Options
