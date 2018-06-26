@@ -47,17 +47,19 @@
 #include <malloc.h>
 #endif
 
+#ifndef __SDCC
 #ifndef HAVE_C99_VLA
-#define HAVE_C99_VLA	!defined(__SDCC)
+#define HAVE_C99_VLA	1
 #endif
 
 #ifndef HAVE_STRSEP
-#define HAVE_STRSEP	!defined(__SDCC)
+#define HAVE_STRSEP     1
 #endif
 
 #ifndef HAVE_STRDUP
-#define HAVE_STRDUP	!defined(__SDCC)
+#define HAVE_STRDUP     1
 #endif
+#endif // ifndef __SDCC
 
 #if !defined(strsep) && !HAVE_STRSEP
 /* ---------------------------------------------------------------- */

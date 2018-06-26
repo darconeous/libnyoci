@@ -58,8 +58,8 @@ tool_cmd_repeat(
 	previous_sigint_handler = signal(SIGINT, &signal_interrupt);
 
 	BEGIN_LONG_ARGUMENTS(ret)
-	HANDLE_LONG_ARGUMENT("interval") interval = strtol(argv[++i], NULL, 0);
-	HANDLE_LONG_ARGUMENT("count") count = strtol(argv[++i], NULL, 0);
+	HANDLE_LONG_ARGUMENT("interval") interval = (int)strtol(argv[++i], NULL, 0);
+	HANDLE_LONG_ARGUMENT("count") count = (int)strtol(argv[++i], NULL, 0);
 	HANDLE_LONG_ARGUMENT("prefix") prefix_string = argv[++i];
 
 	HANDLE_LONG_ARGUMENT("help") {
@@ -68,8 +68,8 @@ tool_cmd_repeat(
 		goto bail;
 	}
 	BEGIN_SHORT_ARGUMENTS(ret)
-	HANDLE_SHORT_ARGUMENT('i') interval = strtol(argv[++i], NULL, 0);
-	HANDLE_SHORT_ARGUMENT('c') count = strtol(argv[++i], NULL, 0);
+	HANDLE_SHORT_ARGUMENT('i') interval = (int)strtol(argv[++i], NULL, 0);
+	HANDLE_SHORT_ARGUMENT('c') count = (int)strtol(argv[++i], NULL, 0);
 
 	HANDLE_SHORT_ARGUMENT2('h', '?') {
 		print_arg_list_help(option_list, argv[0], "[args] command [...]");

@@ -32,6 +32,8 @@
 
 #include "libnyoci.h"
 
+NYOCI_BEGIN_C_DECLS
+
 struct nyoci_dupe_info_s {
 	struct {
 		uint32_t hash;
@@ -48,5 +50,7 @@ struct nyoci_dupe_info_s {
 };
 
 bool nyoci_inbound_dupe_check(void);
+
+NYOCI_END_C_DECLS
 
 #endif

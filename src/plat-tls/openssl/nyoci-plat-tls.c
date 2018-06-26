@@ -46,6 +46,7 @@
 #include <openssl/bio.h>
 #include <openssl/err.h>
 #include <openssl/rand.h>
+#include <openssl/hmac.h>
 
 #include <stdio.h>
 #include <netdb.h>
@@ -65,12 +66,26 @@
 unsigned char cookie_secret[COOKIE_SECRET_LENGTH];
 int cookie_initialized=0;
 
-int
+nyoci_status_t
+nyoci_plat_tls_init(void)
+{
+	static bool did_init;
+	if (!did_init) {
+		SSL_library_init();
+		OpenSSL_add_all_algorithms();
+		ERR_load_BIO_strings();
+		SSL_load_error_strings();
+		ERR_load_crypto_strings();
+		did_init = true;
+	}
+	return NYOCI_STATUS_OK;
+}
+
+static int
 generate_cookie(SSL *ssl, unsigned char *cookie, unsigned int *cookie_len)
 {
 	unsigned char result[EVP_MAX_MD_SIZE];
 	unsigned int resultlength;
-	HMAC_CTX hmac_ctx;
 
 	/* Initialize a random secret */
 	if (!cookie_initialized) {
@@ -81,31 +96,47 @@ generate_cookie(SSL *ssl, unsigned char *cookie, unsigned int *cookie_len)
 		cookie_initialized = 1;
 	}
 
-	HMAC_Init(&hmac_ctx, cookie_secret, COOKIE_SECRET_LENGTH, EVP_sha1());
+	HMAC_CTX *hmac_ctx;
+#if HAVE_OPENSSL_HMAC_CTX_NEW
+	hmac_ctx = HMAC_CTX_new();
 
-	HMAC_Update(&hmac_ctx, (const uint8_t*)&nyoci_plat_get_remote_sockaddr()->nyoci_addr, sizeof(nyoci_addr_t));
-	HMAC_Update(&hmac_ctx, (const uint8_t*)&nyoci_plat_get_remote_sockaddr()->nyoci_port, 2);
+	if (hmac_ctx == NULL) {
+		printf("error allocaitng HMAC CTX");
+		return 0;
+	}
+#else
+	HMAC_CTX hmac_ctx_stack;
+	hmac_ctx = &hmac_ctx_stack;
+#endif
 
-	HMAC_Update(&hmac_ctx, (const uint8_t*)&nyoci_plat_get_local_sockaddr()->nyoci_addr, sizeof(nyoci_addr_t));
-	HMAC_Update(&hmac_ctx, (const uint8_t*)&nyoci_plat_get_local_sockaddr()->nyoci_port, 2);
+	HMAC_Init(hmac_ctx, cookie_secret, COOKIE_SECRET_LENGTH, EVP_sha1());
+
+	HMAC_Update(hmac_ctx, (const uint8_t*)&nyoci_plat_get_remote_sockaddr()->nyoci_addr, sizeof(nyoci_addr_t));
+	HMAC_Update(hmac_ctx, (const uint8_t*)&nyoci_plat_get_remote_sockaddr()->nyoci_port, 2);
+
+	HMAC_Update(hmac_ctx, (const uint8_t*)&nyoci_plat_get_local_sockaddr()->nyoci_addr, sizeof(nyoci_addr_t));
+	HMAC_Update(hmac_ctx, (const uint8_t*)&nyoci_plat_get_local_sockaddr()->nyoci_port, 2);
 
 	/* Calculate HMAC of buffer using the secret */
-	HMAC_Final(&hmac_ctx, result, &resultlength);
+	HMAC_Final(hmac_ctx, result, &resultlength);
 
 	memcpy(cookie, result, resultlength);
 	*cookie_len = resultlength;
 
 	DEBUG_PRINTF("generate_cookie: Generated a cookie");
 
+#if HAVE_OPENSSL_HMAC_CTX_NEW
+	HMAC_CTX_free(hmac_ctx);
+#endif
+
 	return 1;
 }
 
-int
-verify_cookie(SSL *ssl, unsigned char *cookie, unsigned int cookie_len)
+static int
+verify_cookie(SSL *ssl, const unsigned char *cookie, unsigned int cookie_len)
 {
 	unsigned char result[EVP_MAX_MD_SIZE];
 	unsigned int resultlength;
-	HMAC_CTX hmac_ctx;
 
 	DEBUG_PRINTF("verify_cookie: Will verify");
 
@@ -114,16 +145,33 @@ verify_cookie(SSL *ssl, unsigned char *cookie, unsigned int cookie_len)
 		return 0;
 	}
 
-	HMAC_Init(&hmac_ctx, cookie_secret, COOKIE_SECRET_LENGTH, EVP_sha1());
+	HMAC_CTX *hmac_ctx;
+#if HAVE_OPENSSL_HMAC_CTX_NEW
+	hmac_ctx = HMAC_CTX_new();
 
-	HMAC_Update(&hmac_ctx, (const uint8_t*)&nyoci_plat_get_remote_sockaddr()->nyoci_addr, sizeof(nyoci_addr_t));
-	HMAC_Update(&hmac_ctx, (const uint8_t*)&nyoci_plat_get_remote_sockaddr()->nyoci_port, 2);
+	if (hmac_ctx == NULL) {
+		printf("error allocaitng HMAC CTX");
+		return 0;
+	}
+#else
+	HMAC_CTX hmac_ctx_stack;
+	hmac_ctx = &hmac_ctx_stack;
+#endif
 
-	HMAC_Update(&hmac_ctx, (const uint8_t*)&nyoci_plat_get_local_sockaddr()->nyoci_addr, sizeof(nyoci_addr_t));
-	HMAC_Update(&hmac_ctx, (const uint8_t*)&nyoci_plat_get_local_sockaddr()->nyoci_port, 2);
+	HMAC_Init(hmac_ctx, cookie_secret, COOKIE_SECRET_LENGTH, EVP_sha1());
+
+	HMAC_Update(hmac_ctx, (const uint8_t*)&nyoci_plat_get_remote_sockaddr()->nyoci_addr, sizeof(nyoci_addr_t));
+	HMAC_Update(hmac_ctx, (const uint8_t*)&nyoci_plat_get_remote_sockaddr()->nyoci_port, 2);
+
+	HMAC_Update(hmac_ctx, (const uint8_t*)&nyoci_plat_get_local_sockaddr()->nyoci_addr, sizeof(nyoci_addr_t));
+	HMAC_Update(hmac_ctx, (const uint8_t*)&nyoci_plat_get_local_sockaddr()->nyoci_port, 2);
 
 	/* Calculate HMAC of buffer using the secret */
-	HMAC_Final(&hmac_ctx, result, &resultlength);
+	HMAC_Final(hmac_ctx, result, &resultlength);
+
+#if HAVE_OPENSSL_HMAC_CTX_NEW
+	HMAC_CTX_free(hmac_ctx);
+#endif
 
 	if ( (cookie_len == resultlength)
 	  && (memcmp(result, cookie, resultlength) == 0)
@@ -336,15 +384,52 @@ nyoci_openssl_session_update_timeout(struct nyoci_openssl_session_s* item, nyoci
 			&item->dtls_timer,
 			cms
 		);
+	} else {
+		nyoci_invalidate_timer(nyoci, &item->dtls_timer);
 	}
 }
 
 static bool
 handle_ssl_outbound_traffic(nyoci_t self, SSL* ssl)
 {
+	struct nyoci_openssl_session_s* session = nyoci_openssl_session_lookup_by_ssl(self, ssl);
 	bool ret = false;
+#if 1
+	if (!SSL_is_init_finished(ssl)) {
+		int err = SSL_do_handshake(ssl);
+
+		if (session) {
+			nyoci_openssl_session_update_timeout(session, self);
+		}
+
+		if (err <= 0) {
+			switch (SSL_get_error(ssl, err)) {
+			case SSL_ERROR_WANT_WRITE:
+				DEBUG_PRINTF("SSL do_handshake WANT_WRITE");
+				break;
+
+			case SSL_ERROR_WANT_READ:
+				DEBUG_PRINTF("SSL do_handshake WANT_READ");
+				break;
+
+			default:
+				DEBUG_PRINTF("SSL do_handshake error: %s (%d)", ERR_error_string(ERR_peek_last_error(), NULL), (int)SSL_get_error(ssl, err));
+				if (session) {
+					session->status = NYOCI_STATUS_SESSION_ERROR;
+					SSL_shutdown(ssl);
+					return 0;
+				}
+				break;
+			}
+		} else {
+			DEBUG_PRINTF("SSL handshake finished!");
+		}
+	}
+#elif 0
 	if (SSL_in_connect_init(ssl)) {
 		int err = SSL_connect(ssl);
+
+		nyoci_openssl_session_update_timeout(session, self);
 
 		if (err <= 0) {
 			switch (SSL_get_error(ssl, err)) {
@@ -355,6 +440,7 @@ handle_ssl_outbound_traffic(nyoci_t self, SSL* ssl)
 			case SSL_ERROR_WANT_READ:
 				DEBUG_PRINTF("SSL connect WANT_READ");
 				break;
+
 			default:
 				DEBUG_PRINTF("SSL connect error: %s (%d)", ERR_error_string(ERR_peek_last_error(), NULL), (int)SSL_get_error(ssl, err));
 				break;
@@ -363,16 +449,16 @@ handle_ssl_outbound_traffic(nyoci_t self, SSL* ssl)
 			DEBUG_PRINTF("SSL connect CONNECTED!");
 		}
 	}
+#endif
 
 	if (BIO_ctrl_pending(SSL_get_wbio(ssl)) > 0) {
 		socklen_t outlen;
 		uint8_t outbuf[1500];
 
-		// TODO: Writeme!
 		/* Read the data out of the for_writing bio */
 		outlen = BIO_read(SSL_get_wbio(ssl), outbuf, sizeof(outbuf));
 
-		if (outlen) {
+		if (outlen > 0 && outlen <= sizeof(outbuf)) {
 			ssize_t sent_bytes;
 			DEBUG_PRINTF("handle_ssl_outbound_traffic: Sending packet with %d bytes", outlen);
 
@@ -392,6 +478,8 @@ handle_ssl_outbound_traffic(nyoci_t self, SSL* ssl)
 			} else {
 				DEBUG_PRINTF("handle_ssl_outbound_traffic: Sent %d bytes", (int)sent_bytes);
 			}
+		} else {
+			DEBUG_PRINTF("BIO_read(wbio) error: %s (%d)", ERR_error_string(ERR_peek_last_error(), NULL), (int)SSL_get_error(ssl, outlen));
 		}
 		ret = true;
 	}
@@ -403,9 +491,19 @@ static void
 handle_dtls_timer(nyoci_t nyoci, void* context) {
 	struct nyoci_openssl_session_s* item = (struct nyoci_openssl_session_s*)context;
 
-	DTLSv1_handle_timeout(item->ssl);
-	handle_ssl_outbound_traffic(nyoci, item->ssl);
-	nyoci_openssl_session_update_timeout(item, nyoci);
+	switch (DTLSv1_handle_timeout(item->ssl)) {
+	case 1:
+		// Transmitted previous flight of handshake messages.
+		handle_ssl_outbound_traffic(nyoci, item->ssl);
+		break;
+	case -1:
+		// Error.
+		DEBUG_PRINTF("SSL DTLSv1_handle_timeout error: %s (%d)", ERR_error_string(ERR_peek_last_error(), NULL), ERR_peek_last_error());
+	case 0:
+		// Did nothing.
+		nyoci_openssl_session_update_timeout(item, nyoci);
+		break;
+	}
 
 	DEBUG_PRINTF("handle_dtls_timer:exit: SSL State: %s", SSL_state_string_long(item->ssl));
 }
@@ -454,29 +552,6 @@ bail:
 	return ret;
 }
 
-
-void
-load_dh_params(SSL_CTX *ctx)
-{
-	DH *dh=NULL;
-	// SECURITY: This whole section needs to be removed or rewritten, these are insecure defaults.
-
-	if(((dh = DH_new()) == NULL) || !DH_generate_parameters_ex(dh, 128, 5, NULL)) {
-		DEBUG_PRINTF("Couldn't generate DH");
-		return;
-	}
-
-	if (!DH_generate_key(dh))  {
-		DEBUG_PRINTF("Couldn't generate DH key");
-		return;
-	}
-
-	if (SSL_CTX_set_tmp_dh(ctx,dh)<0) {
-		DEBUG_PRINTF("Couldn't set DH params");
-		return;
-	}
-}
-
 nyoci_status_t
 nyoci_plat_tls_set_remote_hostname(const char* hostname)
 {
@@ -484,13 +559,13 @@ nyoci_plat_tls_set_remote_hostname(const char* hostname)
 	return NYOCI_STATUS_OK;
 }
 
-void*
+nyoci_plat_tls_context_t
 nyoci_plat_tls_get_context(nyoci_t self) {
 	NYOCI_SINGLETON_SELF_HOOK;
 	return self->plat.ssl.ssl_ctx;
 }
 
-void*
+nyoci_plat_tls_session_t
 nyoci_plat_tls_get_current_session(void) {
 	nyoci_t const self = nyoci_get_current_instance();
 	if (self->plat.ssl.curr_session) {
@@ -499,14 +574,93 @@ nyoci_plat_tls_get_current_session(void) {
 	return NULL;
 }
 
+static unsigned int
+set_psk_client_cb(SSL *ssl, const char *hint,
+		char *identity, unsigned int max_identity_len,
+		unsigned char *psk, unsigned int max_psk_len)
+{
+	nyoci_t const self = nyoci_get_current_instance();
+
+	if (self->plat.ssl.client_psk_callback != NULL) {
+		return (*self->plat.ssl.client_psk_callback)(self->plat.ssl.client_psk_callback_context, hint, identity, max_identity_len, psk, max_psk_len);
+	}
+
+	return 0;
+}
+
 nyoci_status_t
-nyoci_plat_tls_set_context(nyoci_t self, void* context) {
+nyoci_plat_tls_set_client_psk_callback(nyoci_t self, nyoci_plat_tls_client_psk_callback_func cb, void* context)
+{
+	NYOCI_SINGLETON_SELF_HOOK;
+
+	self->plat.ssl.client_psk_callback = cb;
+	self->plat.ssl.client_psk_callback_context = context;
+
+	SSL_CTX_set_psk_client_callback(
+		self->plat.ssl.ssl_ctx,
+		&set_psk_client_cb
+	);
+
+	return NYOCI_STATUS_OK;
+}
+
+static unsigned int
+set_psk_server_cb(SSL *ssl, const char *identity, unsigned char *psk, unsigned int max_psk_len)
+{
+	nyoci_t const self = nyoci_get_current_instance();
+
+	if (self->plat.ssl.server_psk_callback != NULL) {
+		return (*self->plat.ssl.server_psk_callback)(self->plat.ssl.server_psk_callback_context, identity, psk, max_psk_len);
+	}
+
+	return 0;
+}
+
+nyoci_status_t
+nyoci_plat_tls_set_server_psk_callback(nyoci_t self, nyoci_plat_tls_server_psk_callback_func cb, void* context)
+{
+	NYOCI_SINGLETON_SELF_HOOK;
+
+	self->plat.ssl.server_psk_callback = cb;
+	self->plat.ssl.server_psk_callback_context = context;
+
+	SSL_CTX_set_psk_server_callback(
+		self->plat.ssl.ssl_ctx,
+		&set_psk_server_cb
+	);
+
+	return NYOCI_STATUS_OK;
+}
+
+const char*
+nyoci_plat_tls_get_psk_identity(void)
+{
+	SSL* ssl = nyoci_plat_tls_get_current_session();
+
+	if (ssl == NULL) {
+		return NULL;
+	}
+
+	return SSL_get_psk_identity(ssl);
+}
+
+nyoci_status_t
+nyoci_plat_tls_set_psk_hint(nyoci_t self, const char* hint)
+{
+	NYOCI_SINGLETON_SELF_HOOK;
+	SSL_CTX* ssl_ctx = nyoci_plat_tls_get_context(self);
+
+	return SSL_CTX_use_psk_identity_hint(ssl_ctx, hint) == 1
+		? NYOCI_STATUS_OK
+		: NYOCI_STATUS_FAILURE;
+}
+
+nyoci_status_t
+nyoci_plat_tls_set_context(nyoci_t self, nyoci_plat_tls_context_t context) {
 	NYOCI_SINGLETON_SELF_HOOK;
 	nyoci_status_t ret = NYOCI_STATUS_FAILURE;
-	SSL_library_init();
-	ERR_load_BIO_strings();
-	SSL_load_error_strings();
-	OpenSSL_add_ssl_algorithms();
+
+	nyoci_plat_tls_init();
 
 	if (context == NYOCI_PLAT_TLS_DEFAULT_CONTEXT) {
 		// Set up a context with reasonable defaults.
@@ -523,20 +677,16 @@ nyoci_plat_tls_set_context(nyoci_t self, void* context) {
 
 		self->plat.ssl.ssl_ctx = ctx;
 
-		// TODO: SECURITY: REMOVE THIS FOR PRODUCTION.
-		SSL_CTX_set_cipher_list(ctx, "ALL:NULL:eNULL:aNULL");
-
-		//SSL_CTX_set_verify(ctx, SSL_VERIFY_PEER | SSL_VERIFY_CLIENT_ONCE, dtls_verify_callback);
+		// We can't verify the peer at this point.
 		SSL_CTX_set_verify(ctx, SSL_VERIFY_NONE, dtls_verify_callback);
+
+		SSL_CTX_set_cipher_list(ctx, "ALL:!EXPORT:!LOW:!aNULL:!eNULL:!SSLv2:-CAMILLA:PSK");
 
 	} else {
 		self->plat.ssl.ssl_ctx = context;
 	}
 
 	require(self->plat.ssl.ssl_ctx != NULL, bail);
-
-	// TODO: SECURITY: REMOVE THIS FOR PRODUCTION.
-	load_dh_params(self->plat.ssl.ssl_ctx);
 
 	SSL_CTX_set_session_cache_mode(self->plat.ssl.ssl_ctx, SSL_SESS_CACHE_OFF);
 	SSL_CTX_set_cookie_generate_cb(self->plat.ssl.ssl_ctx, generate_cookie);
@@ -569,7 +719,7 @@ nyoci_plat_tls_inbound_packet_process(
 		char addr_str[50] = "???";
 		uint16_t port = ntohs(nyoci_plat_get_remote_sockaddr()->nyoci_port);
 		NYOCI_ADDR_NTOP(addr_str,sizeof(addr_str),&nyoci_plat_get_remote_sockaddr()->nyoci_addr);
-		DEBUG_PRINTF("nyoci(%p): Inbound DTLS packet from [%s]:%d", self, addr_str, (int)port);
+		DEBUG_PRINTF("nyoci(%p): Inbound DTLS packet from [%s]:%d (%d bytes)", self, addr_str, (int)port, len);
 	}
 #endif
 
@@ -581,7 +731,7 @@ nyoci_plat_tls_inbound_packet_process(
 	}
 
 	if (!session) {
-		DEBUG_PRINTF("nyoci_plat_tls_inbound_packet_process: *** Inbound packet from unknown session!");
+		DEBUG_PRINTF("nyoci_plat_tls_inbound_packet_process: *** Inbound packet from UNKNOWN session!");
 
 		// Packet for an as-of-yet uncreated session
 		if (!self->plat.ssl.next_ssl) {
@@ -601,8 +751,14 @@ nyoci_plat_tls_inbound_packet_process(
 				bio_w
 			);
 
-			SSL_set_mode(self->plat.ssl.next_ssl, SSL_MODE_AUTO_RETRY);
+			//SSL_set_mode(self->plat.ssl.next_ssl, SSL_MODE_AUTO_RETRY);
+			//SSL_set_mode(self->plat.ssl.next_ssl, SSL_MODE_ASYNC);
 			SSL_set_accept_state(self->plat.ssl.next_ssl);
+
+			SSL_set_options(self->plat.ssl.next_ssl, SSL_OP_NO_QUERY_MTU);
+			SSL_set_mtu(self->plat.ssl.next_ssl, 1400);
+			BIO_ctrl(bio_w, BIO_CTRL_DGRAM_SET_MTU, 1400, NULL);
+			BIO_ctrl(bio_r, BIO_CTRL_DGRAM_SET_MTU, 1400, NULL);
 
 #if 1
 			SSL_set_options(self->plat.ssl.next_ssl, SSL_OP_COOKIE_EXCHANGE);
@@ -664,16 +820,27 @@ nyoci_plat_tls_inbound_packet_process(
 		}
 
 	} else {
-		DEBUG_PRINTF("nyoci_plat_tls_inbound_packet_process: *** Inbound packet from KNOWN session!");
-		BIO_write(SSL_get_rbio(ssl), buffer, len);
+		int written;
+		DEBUG_PRINTF("nyoci_plat_tls_inbound_packet_process: *** Inbound packet from known session");
 
-		if (0 != (SSL_get_shutdown(ssl) & SSL_RECEIVED_SHUTDOWN)) {
+		written = BIO_write(SSL_get_rbio(ssl), buffer, len);
+
+		if ((err > 0) && (err != len)) {
+			// invalid partial write. Should never happen.
+			DEBUG_PRINTF("nyoci_plat_tls_inbound_packet_process: *** Invalid partial write");
+			abort();
+		} else if (err < 0) {
+			DEBUG_PRINTF("BIO_write error: %s (%d)", ERR_error_string(ERR_peek_last_error(), NULL), (int)SSL_get_error(ssl, err));
+		}
+
+
+		if (0 != SSL_get_shutdown(ssl)) {
 			ret = NYOCI_STATUS_SESSION_CLOSED;
 			goto bail;
 		}
 	}
 
-	if (ssl) {
+	if (ssl != NULL && SSL_is_init_finished(ssl)) {
 		len = SSL_read(ssl, buffer, len);
 
 		if (SSL_get_error(ssl, len) == SSL_ERROR_WANT_WRITE) {
@@ -692,6 +859,9 @@ nyoci_plat_tls_inbound_packet_process(
 		default:
 		case SSL_ERROR_SSL:
 			ret = NYOCI_STATUS_SESSION_ERROR;
+			if (session != NULL) {
+				session->status = NYOCI_STATUS_SESSION_ERROR;
+			}
 			DEBUG_PRINTF("SSL read error: %s (%d)", ERR_error_string(ERR_peek_last_error(), NULL), (int)SSL_get_error(ssl, len));
 			break;
 		}
@@ -772,9 +942,15 @@ nyoci_plat_tls_outbound_packet_process(
 
 		SSL_set_bio(ssl, bio_r, bio_w);
 
-		SSL_set_mode(ssl, SSL_MODE_AUTO_RETRY);
+		//SSL_set_mode(ssl, SSL_MODE_AUTO_RETRY);
+		//SSL_set_mode(ssl, SSL_MODE_ASYNC);
+		SSL_set_options(ssl, SSL_OP_NO_QUERY_MTU);
+		SSL_set_mtu(ssl, 1400);
+		BIO_ctrl(bio_w, BIO_CTRL_DGRAM_SET_MTU, 1400, NULL);
+		BIO_ctrl(bio_r, BIO_CTRL_DGRAM_SET_MTU, 1400, NULL);
 
 		SSL_set_connect_state(ssl);
+		SSL_connect(ssl);
 
 		if (add_ssl_object(
 			self,
@@ -795,26 +971,29 @@ nyoci_plat_tls_outbound_packet_process(
 	session->last_activity = nyoci_plat_cms_to_timestamp(0);
 	session->msg_id = self->outbound.packet->msg_id;
 
-	{
+	if (SSL_is_init_finished(ssl) || SSL_get_shutdown(ssl)) {
 		socklen_t len;
 		// If the session is in an error state, then return
 		// NYOCI_STATUS_SESSION_ERROR and clean up the session.
 
-		if (0 != (SSL_get_shutdown(ssl) & SSL_RECEIVED_SHUTDOWN)) {
-			ret = NYOCI_STATUS_SESSION_CLOSED;
-			goto bail;
-		}
+		ret = NYOCI_STATUS_OK;
 
-		len = SSL_write(ssl, data_ptr, data_len);
-
-		if (SSL_get_error(ssl, len) == SSL_ERROR_WANT_WRITE) {
-			handle_ssl_outbound_traffic(self, ssl);
+		if (0 != SSL_get_shutdown(ssl)) {
+			if (session->status == NYOCI_STATUS_OK) {
+				session->status = NYOCI_STATUS_SESSION_CLOSED;
+			}
+			ret = session->status;
+		} else {
 			len = SSL_write(ssl, data_ptr, data_len);
+
+			if (SSL_get_error(ssl, len) == SSL_ERROR_WANT_WRITE) {
+				handle_ssl_outbound_traffic(self, ssl);
+				len = SSL_write(ssl, data_ptr, data_len);
+			}
 		}
 
 		switch (SSL_get_error(ssl, len)) {
 			case SSL_ERROR_NONE:
-				ret = NYOCI_STATUS_OK;
 				break;
 
 			case SSL_ERROR_WANT_WRITE:
@@ -840,21 +1019,22 @@ nyoci_plat_tls_outbound_packet_process(
 				SSL_shutdown(ssl);
 				goto bail;
 		}
+	} else {
+		ret = NYOCI_STATUS_WAIT_FOR_SESSION;
 	}
 
 bail:
-	if ( (ssl != NULL)
-	  && (NYOCI_STATUS_SESSION_ERROR == ret || NYOCI_STATUS_SESSION_CLOSED == ret)
-	) {
-		remove_ssl_object(self, ssl);
-		ssl = NULL;
-		session = NULL;
-	}
 
 	// Send any needed outbound packets.
-	if (ssl) {
+	if (ssl != NULL) {
 		while(handle_ssl_outbound_traffic(self, ssl)) { }
 		DEBUG_PRINTF("nyoci_plat_tls_outbound_packet_process:exit: SSL State: %s", SSL_state_string_long(ssl));
+
+		if ( (NYOCI_STATUS_SESSION_ERROR == ret || NYOCI_STATUS_SESSION_CLOSED == ret) ) {
+			remove_ssl_object(self, ssl);
+			ssl = NULL;
+			session = NULL;
+		}
 	}
 
 	// Update timer

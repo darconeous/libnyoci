@@ -34,6 +34,7 @@
 #include "nyoci-logging.h"
 #include "nyoci-helpers.h"
 #include "nyoci-internal.h"
+#include "nyoci-missing.h"
 
 #if CONTIKI
 #include "contiki.h"
@@ -886,10 +887,10 @@ coap_dump_header(
 		if(option_ptr && option_ptr[0]==0xFF) {
 
 			fputs(prefix, outstream);
-			fprintf(outstream, "Payload-Size: %ld\n",packet_size-(option_ptr-(uint8_t*)header)-1);
+			fprintf(outstream, "Payload-Size: %zd\n",packet_size-(option_ptr-(uint8_t*)header)-1);
 		} else {
 			fputs(prefix, outstream);
-			fprintf(outstream,"PACKET CORRUPTED: %ld extra bytes\n",packet_size-(option_ptr-(uint8_t*)header));
+			fprintf(outstream,"PACKET CORRUPTED: %zd extra bytes\n",packet_size-(option_ptr-(uint8_t*)header));
 		}
 	}
 

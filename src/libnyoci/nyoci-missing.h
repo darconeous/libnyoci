@@ -103,19 +103,6 @@ char* ___nyoci_strndup(const char* cstr,size_t maxlen);
 char* ___nyoci_stpncpy(char* dest, const char* src, size_t len);
 #endif
 
-#if __AVR__
-#include <avr/pgmspace.h>
-#include <alloca.h>
-#define strnequal_const(a, const_b, len_a) (strncmp_P(a, PSTR(const_b),len_a) == 0)
-#define strequal_const(a, b) (strcmp_P(a, PSTR(b)) == 0)
-#define strhasprefix_const(a, \
-		b) (strncmp_P(a, PSTR(b), sizeof(b) - 1) == 0)
-#else
-#define strnequal_const(a, const_b, len_a) (strncmp(a, const_b,len_a) == 0)
-#define strequal_const(a, b) (strcmp(a, b) == 0)
-#define strhasprefix_const(a, b) (strncmp(a, b, sizeof(b) - 1) == 0)
-#endif
-
 #ifndef MIN
 #if defined(__GCC_VERSION__)
 #define MIN(a, \

@@ -39,7 +39,7 @@
 #include <stdio.h>      // For ssize_t
 
 #if defined(__cplusplus)
-NYOCI_INTERNAL_EXTERN "C" {
+extern "C" {
 #endif
 
 /*!	@defgroup btree Binary Tree Functions

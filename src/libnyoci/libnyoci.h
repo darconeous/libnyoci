@@ -184,10 +184,12 @@ NYOCI_API_EXTERN void nyoci_release(nyoci_t self);
 #if NYOCI_SINGLETON && !defined(DOXYGEN_SHOULD_SKIP_THIS)
 NYOCI_API_EXTERN struct nyoci_s gNyociInstance;
 #define nyoci_get_current_instance() (&gNyociInstance)
+#define nyoci_set_current_instance(x)
 #else
 //! Used from inside of callbacks to obtain a reference to the current instance.
 NYOCI_API_EXTERN nyoci_t nyoci_get_current_instance(void);
 
+NYOCI_INTERNAL_EXTERN void nyoci_set_current_instance(nyoci_t x);
 #endif
 
 //!	Sets the default request handler.
@@ -351,6 +353,9 @@ NYOCI_API_EXTERN uint16_t nyoci_inbound_get_flags(void);
 //! Returns true if the inbound packet is a multicast packet
 #define nyoci_inbound_is_multicast() ((nyoci_inbound_get_flags()&NYOCI_INBOUND_FLAG_MULTICAST)==NYOCI_INBOUND_FLAG_MULTICAST)
 
+//! Returns true if the inbound packet has an observe option
+#define nyoci_inbound_has_observe() ((nyoci_inbound_get_flags()&NYOCI_INBOUND_FLAG_HAS_OBSERVE)==NYOCI_INBOUND_FLAG_HAS_OBSERVE)
+
 //! Returns true if LibNyoci thinks the inbound packet originated from the local machine.
 #define nyoci_inbound_is_local() ((nyoci_inbound_get_flags()&NYOCI_INBOUND_FLAG_LOCAL)==NYOCI_INBOUND_FLAG_LOCAL)
 
@@ -360,6 +365,9 @@ NYOCI_API_EXTERN const char* nyoci_inbound_get_content_ptr(void);
 
 //!	Returns the length of the inbound packet's content.
 NYOCI_API_EXTERN coap_size_t nyoci_inbound_get_content_len(void);
+
+//!	Convenience function for getting the value of the observe header.
+NYOCI_API_EXTERN uint32_t nyoci_inbound_get_observe(void);
 
 //!	Convenience function for getting the content type of the inbound packet.
 NYOCI_API_EXTERN coap_content_type_t nyoci_inbound_get_content_type(void);
@@ -525,6 +533,7 @@ NYOCI_END_C_DECLS
 #include "nyoci-plat-tls.h"
 #endif
 
+#include "nyoci-timer.h"
 #include "nyoci-async.h"
 #include "nyoci-transaction.h"
 #include "nyoci-observable.h"

@@ -17,10 +17,7 @@
 #include <ctype.h>
 #include <libgen.h>
 #include <time.h>
-
-#if NYOCI_PLAT_TLS_OPENSSL
-#include <openssl/ssl.h>
-#endif
+#include <poll.h>
 
 #if !HAVE_FGETLN
 #include <missing/fgetln.h>
@@ -34,9 +31,13 @@
 #endif
 #endif
 
-#include <poll.h>
-
 #include <libnyoci/libnyoci.h>
+
+#if NYOCI_PLAT_TLS_OPENSSL
+#include <openssl/ssl.h>
+#endif
+
+#include "string-utils.h"
 #include "nyoci-missing.h"
 
 #include "cmd_list.h"
@@ -65,10 +66,14 @@ static arg_list_item_t option_list[] = {
 #if NYOCI_PLAT_TLS_OPENSSL && HAVE_OPENSSL_SSL_CONF_CTX_NEW
 	{ 0, NULL,	"ssl-*", "SSL Configuration commands (see docs)" },
 #endif
+#if NYOCI_DTLS
+	{ 'i', "identity",	"identity", "Set DTLS PSK identity" },
+	{ 'P', "psk",	"string", "Set DTLS PSK as a string" },
+#endif
 	{ 0 }
 };
 
-void print_commands();
+void print_commands(void);
 
 static int
 tool_cmd_help(
@@ -253,36 +258,50 @@ bail:
 }
 
 char*
-get_next_arg(char *buf, char **rest) {
+get_next_arg(char *buf, char **rest)
+{
 	char* ret = NULL;
-
-	while(*buf && isspace(*buf)) buf++;
-
-	if(!*buf || *buf == '#')
-		goto bail;
-
-	ret = buf;
-
 	char quote_type = 0;
-	char* write_iter = ret;
+	char* write_iter = NULL;
 
-	while(*buf) {
-		if(quote_type && *buf==quote_type) {
-			quote_type = 0;
+	// Trim whitespace
+	while (isspace(*buf)) {
+		buf++;
+	};
+
+	// Skip if we are empty or the start of a comment.
+	if ((*buf == 0) || (*buf == '#')) {
+		goto bail;
+	}
+
+	write_iter = ret = buf;
+
+	while (*buf != 0) {
+		if (quote_type != 0) {
+			// We are in the middle of a quote, so we are
+			// looking for matching end of the quote.
+			if (*buf == quote_type) {
+				quote_type = 0;
+				buf++;
+				continue;
+			}
+		} else {
+			if (*buf == '"' || *buf == '\'') {
+				quote_type = *buf++;
+				continue;
+			}
+
+			// Stop parsing arguments if we hit unquoted whitespace.
+			if (isspace(*buf)) {
+				buf++;
+				break;
+			}
+		}
+
+		// Allow for slash-escaping
+		if ((buf[0] == '\\') && (buf[1] != 0)) {
 			buf++;
-			continue;
 		}
-		if(*buf == '"' || *buf == '\'') {
-			quote_type = *buf++;
-			continue;
-		}
-
-		if(!quote_type && isspace(*buf)) {
-			buf++;
-			break;
-		}
-
-		if(buf[0]=='\\' && buf[1]) buf++;
 
 		*write_iter++ = *buf++;
 	}
@@ -290,8 +309,9 @@ get_next_arg(char *buf, char **rest) {
 	*write_iter = 0;
 
 bail:
-	if(rest)
+	if (rest) {
 		*rest = buf;
+	}
 	return ret;
 }
 
@@ -299,7 +319,7 @@ bail:
 static bool history_disabled;
 #endif
 
-void process_input_line(char *l) {
+static void process_input_line(char *l) {
 	char *inputstring;
 	char *argv2[100];
 	char **ap = argv2;
@@ -354,7 +374,7 @@ static char* get_current_prompt() {
 	return prompt;
 }
 
-void process_input_readline(char *l) {
+static void process_input_readline(char *l) {
 	process_input_line(l);
 	if(istty) {
 #if HAVE_RL_SET_PROMPT
@@ -371,12 +391,13 @@ void process_input_readline(char *l) {
 
 #if HAVE_LIBREADLINE
 
-char *
+static char *
 nyoci_command_generator(
 	const char *text,
 	int state
 ) {
-	static int list_index, len;
+	static int list_index;
+	static size_t len;
 	const char *name;
 
 	/* If this is a new word to complete, initialize now.  This includes
@@ -401,7 +422,7 @@ nyoci_command_generator(
 	return ((char *)NULL);
 }
 
-char *
+static char *
 nyoci_directory_generator(
 	const char *text,
 	int state
@@ -424,7 +445,7 @@ nyoci_directory_generator(
 	 variable to 0. */
 	if (!state)
 	{
-		int i;
+		size_t i;
 
 		if(temp_file)
 			fclose(temp_file);
@@ -533,7 +554,7 @@ bail:
 	return ret;
 }
 
-char **
+static char **
 nyoci_attempted_completion (
 	const char *text,
 	int start,
@@ -597,12 +618,51 @@ bail:
 #define PACKAGE_VERSION "0.0"
 #endif
 
-void
+static void
 print_version() {
 	printf(PACKAGE_TARNAME"ctl "PACKAGE_VERSION"\n");
 }
 
 // MARK: -
+// MARK: DTLS Stuff
+
+#if NYOCI_DTLS
+char gNyocictlClientPskIdentity[128];
+uint8_t gNyocictlClientPsk[128];
+int gNyocictlClientPskLength = 0;
+
+static unsigned int
+nyocictl_plat_tls_client_psk_cb(
+	void* context,
+	const char *hint,
+	char *identity, unsigned int max_identity_len,
+	unsigned char *psk, unsigned int max_psk_len
+) {
+	// We ignore the hint.
+
+	strlcpy(identity, gNyocictlClientPskIdentity, max_identity_len);
+
+	if (max_psk_len > gNyocictlClientPskLength) {
+		max_psk_len = gNyocictlClientPskLength;
+	}
+
+	memcpy(psk, gNyocictlClientPsk, max_psk_len);
+
+	return max_psk_len;
+}
+
+static unsigned int
+nyocictl_plat_tls_server_psk_cb(
+	void* context,
+	const char *identity,
+	unsigned char *psk, unsigned int max_psk_len
+) {
+	return 0;
+}
+#endif // if NYOCI_DTLS
+
+// MARK: -
+
 
 
 int
@@ -611,26 +671,32 @@ main(
 ) {
 	int i, debug_mode = 0;
 	uint16_t port = 61616;
-	uint16_t ssl_port = 61617;
-	int ssl_ret;
 
 #if NYOCI_DTLS
-#if NYOCI_PLAT_TLS_OPENSSL && HAVE_OPENSSL_SSL_CONF_CTX_NEW
-	SSL_CTX* ssl_ctx = NULL;
+	uint16_t ssl_port = 61617;
+	int ssl_ret;
+	nyoci_plat_tls_context_t ssl_ctx = NYOCI_PLAT_TLS_DEFAULT_CONTEXT;
 
+#if NYOCI_PLAT_TLS_OPENSSL && HAVE_OPENSSL_SSL_CONF_CTX_NEW
 	SSL_CONF_CTX* ssl_conf_ctx = SSL_CONF_CTX_new();
+
 #if HAVE_OPENSSL_DTLS_METHOD
 	ssl_ctx = SSL_CTX_new(DTLS_method());
-#else
-	ssl_ctx = SSL_CTX_new(DTLSv1_method());
-#endif
+#else // if HAVE_OPENSSL_DTLS_METHOD
+	ssl_ctx = SSL_CTX_new(DTLSv1_2_method());
+#endif // else HAVE_OPENSSL_DTLS_METHOD
+
+	// Make sure the PSK mechanisms are present.
+	SSL_CTX_set_cipher_list(ssl_ctx, "ALL:!EXPORT:!LOW:!aNULL:!eNULL:!SSLv2:-CAMILLA:PSK");
+
 	SSL_CONF_CTX_set_ssl_ctx(ssl_conf_ctx, ssl_ctx);
 	SSL_CONF_CTX_set_flags(ssl_conf_ctx, SSL_CONF_FLAG_CLIENT|SSL_CONF_FLAG_CERTIFICATE|SSL_CONF_FLAG_SHOW_ERRORS);
+	SSL_CONF_CTX_set_flags(ssl_conf_ctx, SSL_CONF_FLAG_FILE);
+	SSL_CONF_CTX_set1_prefix(ssl_conf_ctx, "NYOCICTL_SSL_");
+
 #ifdef SSL_CONF_FLAG_REQUIRE_PRIVATE
 	SSL_CONF_CTX_set_flags(ssl_conf_ctx, SSL_CONF_FLAG_REQUIRE_PRIVATE);
 #endif
-	SSL_CONF_CTX_set_flags(ssl_conf_ctx, SSL_CONF_FLAG_FILE);
-	SSL_CONF_CTX_set1_prefix(ssl_conf_ctx, "LibNyociCTL_SSL_");
 
 	for (i = 0; envp[i]; i++) {
 		char key[256] = {};
@@ -659,12 +725,11 @@ main(
 	SSL_CONF_CTX_set_flags(ssl_conf_ctx, SSL_CONF_FLAG_CMDLINE);
 	SSL_CONF_CTX_set1_prefix(ssl_conf_ctx, "--ssl-");
 
-#else
-	void* ssl_ctx = NULL;
-#endif
-#endif
+#endif // if NYOCI_PLAT_TLS_OPENSSL && HAVE_OPENSSL_SSL_CONF_CTX_NEW
 
-	srandom(time(NULL));
+#endif // if NYOCI_DTLS
+
+	srandom((unsigned)time(NULL));
 
 	BEGIN_LONG_ARGUMENTS(gRet)
 #if NYOCI_PLAT_TLS_OPENSSL && HAVE_OPENSSL_SSL_CONF_CTX_NEW
@@ -686,7 +751,7 @@ main(
 			return ERRORCODE_BADARG;
 		}
 	}
-#endif
+#endif // if NYOCI_PLAT_TLS_OPENSSL && HAVE_OPENSSL_SSL_CONF_CTX_NEW
 	HANDLE_LONG_ARGUMENT("port") port = (uint16_t)strtol(argv[++i], NULL, 0);
 	HANDLE_LONG_ARGUMENT("debug") debug_mode++;
 
@@ -704,13 +769,22 @@ main(
 		gRet = ERRORCODE_HELP;
 		goto bail;
 	}
+#if NYOCI_DTLS
+	HANDLE_LONG_ARGUMENT("identity") {
+		strlcpy(gNyocictlClientPskIdentity, argv[++i], sizeof(gNyocictlClientPskIdentity));
+	}
+	HANDLE_LONG_ARGUMENT("psk") {
+		strlcpy((char*)gNyocictlClientPsk, argv[++i], sizeof(gNyocictlClientPsk));
+		gNyocictlClientPskLength = strlen((const char*)gNyocictlClientPsk);
+	}
+#endif
 	BEGIN_SHORT_ARGUMENTS(gRet)
 	HANDLE_SHORT_ARGUMENT('p') port = (uint16_t)strtol(argv[++i], NULL, 0);
 	HANDLE_SHORT_ARGUMENT('d') debug_mode++;
 #if HAVE_LIBREADLINE
 	HANDLE_SHORT_ARGUMENT('f') {
 		stdin = fopen(argv[++i], "r");
-		if(!stdin) {
+		if (!stdin) {
 			fprintf(stderr,
 				"%s: error: Unable to open file \"%s\".\n",
 				argv[0],
@@ -719,6 +793,16 @@ main(
 		}
 	}
 #endif
+#if NYOCI_DTLS
+	HANDLE_SHORT_ARGUMENT('i') {
+		strlcpy(gNyocictlClientPskIdentity, argv[++i], sizeof(gNyocictlClientPskIdentity));
+	}
+	HANDLE_SHORT_ARGUMENT('P') {
+		strlcpy((char*)gNyocictlClientPsk, argv[++i], sizeof(gNyocictlClientPsk));
+		gNyocictlClientPskLength = strlen((const char*)gNyocictlClientPsk);
+	}
+#endif
+
 	HANDLE_SHORT_ARGUMENT('v') {
 		print_version();
 		gRet = 0;
@@ -745,7 +829,7 @@ main(
 
 	gLibNyociInstance = nyoci_create();
 
-	if(!gLibNyociInstance) {
+	if (!gLibNyociInstance) {
 		fprintf(stderr,"%s: FATAL-ERROR: Unable to initialize nyoci instance! \"%s\" (%d)\n",argv[0],strerror(errno),errno);
 		return ERRORCODE_INIT_FAILURE;
 	}
@@ -755,6 +839,7 @@ main(
 			fprintf(stderr,"%s: FATAL-ERROR: Unable to bind to port! \"%s\" (%d)\n",argv[0],strerror(errno),errno);
 			return ERRORCODE_INIT_FAILURE;
 		}
+		port = 0;
 	}
 
 #if NYOCI_DTLS
@@ -774,6 +859,12 @@ main(
 		}
 	} else {
 		fprintf(stderr,"%s: ERROR: Unable to set ssl context!\n",argv[0]);
+	}
+
+	if ( gNyocictlClientPskIdentity[0] != 0
+	  || gNyocictlClientPskLength != 0
+	) {
+		nyoci_plat_tls_set_client_psk_callback(gLibNyociInstance, &nyocictl_plat_tls_client_psk_cb, NULL);
 	}
 #endif
 
@@ -873,13 +964,17 @@ main(
 	}
 
 bail:
+
 #if HAVE_LIBREADLINE
 	rl_callback_handler_remove();
 #endif  // HAVE_LIBREADLINE
-	if(gRet == ERRORCODE_QUIT)
-		gRet = 0;
 
-	if(gLibNyociInstance)
+	if (gRet == ERRORCODE_QUIT) {
+		gRet = 0;
+	}
+
+	if (gLibNyociInstance) {
 		nyoci_release(gLibNyociInstance);
+	}
 	return gRet;
 }

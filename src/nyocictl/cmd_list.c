@@ -69,7 +69,7 @@ static char* list_data;
 static coap_size_t list_data_size;
 static struct nyoci_transaction_s transaction;
 
-void
+static void
 parse_link_format(char* content, coap_size_t content_length, void* context) {
 	char *iter = content;
 	char *end = content + content_length;
@@ -84,6 +84,7 @@ parse_link_format(char* content, coap_size_t content_length, void* context) {
 			char* desc = 0;
 			char* v = 0;
 			char* sh_url = 0;
+			bool obs = false;
 			coap_content_type_t type = COAP_CONTENT_TYPE_UNKNOWN;
 			int uri_len = 0;
 
@@ -99,7 +100,7 @@ parse_link_format(char* content, coap_size_t content_length, void* context) {
 			if(iter && *iter == ';') {
 				while(iter && (iter < end)) {
 					char* key;
-					char* value;
+					char* value = NULL;
 					char endchar;
 
 					iter++;
@@ -110,11 +111,19 @@ parse_link_format(char* content, coap_size_t content_length, void* context) {
 
 					if(*iter==';') {
 						*iter = 0;
+						if (0 == strcmp(key, "obs")) {
+							obs = true;
+						}
 						continue;
 					}
 
-					if(!*iter || *iter==',')
+					if(!*iter || *iter==',') {
+						*iter = 0;
+						if (0 == strcmp(key, "obs")) {
+							obs = true;
+						}
 						break;
+					}
 
 					*iter++ = 0;
 
@@ -156,18 +165,21 @@ parse_link_format(char* content, coap_size_t content_length, void* context) {
 					}
 					// TODO: Unquote...?
 					//url_decode_cstr_inplace(value);
-					if(0 == strcmp(key, "n"))
+					if(0 == strcmp(key, "n")) {
 						name = value;
-					else if(!name && 0 == strcmp(key, "rt"))
+					} else if(!name && 0 == strcmp(key, "rt")) {
 						name = value;
-					else if(0 == strcmp(key, "title"))
+					} else if(0 == strcmp(key, "title")) {
 						desc = value;
-					else if(0 == strcmp(key, "v"))
+					} else if(0 == strcmp(key, "v")) {
 						v = value;
-					else if(0 == strcmp(key, "ct"))
+					} else if(0 == strcmp(key, "ct")) {
 						type = (coap_content_type_t)strtol(value, NULL, 0);
-					else if(0 == strcmp(key, "sh"))
+					} else if (0 == strcmp(key, "obs")) {
+						obs = !!strtol(value, NULL, 0);
+					} else if(0 == strcmp(key, "sh")) {
 						sh_url = value;
+					}
 					//printf("%s = %s\n",key,value);
 					if(endchar == ',' || (iter >= end))
 						break;
@@ -228,7 +240,13 @@ parse_link_format(char* content, coap_size_t content_length, void* context) {
 						sh_url);
 				if(type != COAP_CONTENT_TYPE_UNKNOWN) fprintf(stdout,"[%s] ",
 						coap_content_type_to_cstr(type));
-				if(desc) fprintf(stdout,"(%s) ",desc);
+				if(desc) {
+					fprintf(stdout,"(%s) ",desc);
+				}
+
+				if(obs) {
+					fprintf(stdout,"OBS ");
+				}
 			}
 			fprintf(stdout,"\n");
 		} else {
@@ -368,13 +386,18 @@ resend_list_request(void* context) {
 
 	status = nyoci_outbound_send();
 
-	if(status) {
-		check_noerr(status);
-		fprintf(stderr,
-			"nyoci_outbound_send() returned error %d(%s).\n",
-			status,
-			nyoci_status_to_cstr(status));
-		goto bail;
+	switch (status) {
+		case NYOCI_STATUS_OK:
+		case NYOCI_STATUS_WAIT_FOR_SESSION:
+		case NYOCI_STATUS_WAIT_FOR_DNS:
+			break;
+		default:
+			check_noerr(status);
+			fprintf(stderr,
+				"nyoci_outbound_send() returned error %d(%s).\n",
+				status,
+				nyoci_status_to_cstr(status));
+			break;
 	}
 
 bail:
@@ -453,7 +476,7 @@ tool_cmd_list(
 	HANDLE_LONG_ARGUMENT("follow") redirect_count = 10;
 	HANDLE_LONG_ARGUMENT("slice-size") size_request =
 		htons(strtol(argv[++i], NULL, 0));
-	HANDLE_LONG_ARGUMENT("timeout") timeout_cms = strtol(argv[++i], NULL, 0);
+	HANDLE_LONG_ARGUMENT("timeout") timeout_cms = (int)strtol(argv[++i], NULL, 0);
 	HANDLE_LONG_ARGUMENT("filename-only") list_filename_only = true;
 
 	HANDLE_LONG_ARGUMENT("help") {
@@ -464,7 +487,7 @@ tool_cmd_list(
 	BEGIN_SHORT_ARGUMENTS(gRet)
 	HANDLE_SHORT_ARGUMENT('i') list_show_headers = true;
 	HANDLE_SHORT_ARGUMENT('f') redirect_count = 10;
-	HANDLE_SHORT_ARGUMENT('t') timeout_cms = strtol(argv[++i], NULL, 0);
+	HANDLE_SHORT_ARGUMENT('t') timeout_cms = (int)strtol(argv[++i], NULL, 0);
 
 	HANDLE_SHORT_ARGUMENT2('h', '?') {
 		print_arg_list_help(option_list, argv[0], "[args] <uri>");

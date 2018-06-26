@@ -67,6 +67,18 @@ pkginclude_HEADERS = \
 	ll.h \
 	$(NULL)
 
+# Eventually these headers should be removed or reconsidered,
+# but at the moment is is rather convenient to keep them around.
+pkginclude_HEADERS += \
+	assert-macros.h \
+	fasthash.h \
+	url-helpers.h \
+	string-utils.h \
+	nyoci-internal.h \
+	nyoci-dupe.h \
+	nyoci-logging.h \
+	$(NULL)
+
 EXTRA_DIST = nyoci-config.h.in
 
 libnyoci_la_CFLAGS = $(AM_CFLAGS) $(PTHREAD_CFLAGS) $(HIDDEN_VISIBILITY_CFLAGS)

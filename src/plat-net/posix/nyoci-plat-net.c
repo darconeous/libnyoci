@@ -44,6 +44,7 @@
 
 #include "nyoci-internal.h"
 #include "nyoci-logging.h"
+#include "nyoci-missing.h"
 
 #include <stdio.h>
 #include <poll.h>
@@ -104,7 +105,7 @@ typedef struct multicast_group{
 	} group;
 } multicast_group_s;
 
-void fill_multicast_group(multicast_group_s * group, const struct sockaddr* addr, int interfaceIndex)
+static void fill_multicast_group(multicast_group_s * group, const struct sockaddr* addr, int interfaceIndex)
 {
 	bzero(group, sizeof(multicast_group_s));
 
@@ -145,7 +146,7 @@ nyoci_internal_multicast_joinleave(nyoci_t self, const nyoci_sockaddr_t *group, 
 								? (join ? IP_ADD_MEMBERSHIP		: IP_DROP_MEMBERSHIP)
 								: (join ? IPV6_JOIN_GROUP		: IPV6_LEAVE_GROUP);
 
-		ret = setsockopt(fd, level, opt, &multicast.group, multicast.group_size);
+		ret = setsockopt(fd, level, opt, &multicast.group, (socklen_t)multicast.group_size);
 
 		if (ret >= 0) {
 			status = NYOCI_STATUS_OK;
@@ -205,6 +206,9 @@ nyoci_plat_join_standard_groups(nyoci_t self, int interface)
 
 #if NYOCI_PLAT_NET_POSIX_FAMILY == AF_INET6
 	ret = nyoci_internal_join_multicast_group(self, COAP_MULTICAST_IP6_LL_ALLDEVICES, interface);
+	if (ret != NYOCI_STATUS_OK) {
+		return ret;
+	}
 #endif
 
 	ret = nyoci_internal_join_multicast_group(self, COAP_MULTICAST_IP4_ALLDEVICES, interface);
@@ -985,7 +989,7 @@ nyoci_plat_lookup_hostname(const char* hostname, nyoci_sockaddr_t* saddr, int fl
 	if(error && (inet_addr(hostname) != INADDR_NONE)) {
 		char addr_v4mapped_str[8 + strlen(hostname)];
 		hint.ai_family = AF_INET6;
-		hint.ai_flags = AI_ALL | AI_V4MAPPED,
+		hint.ai_flags = AI_ALL | AI_V4MAPPED;
 		strcpy(addr_v4mapped_str,"::ffff:");
 		strcat(addr_v4mapped_str,hostname);
 		error = getaddrinfo(addr_v4mapped_str,

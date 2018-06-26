@@ -181,7 +181,7 @@ bail:
 	return NYOCI_STATUS_OK;
 }
 
-nyoci_status_t
+static nyoci_status_t
 resend_get_request(void* context) {
 	nyoci_status_t status = 0;
 
@@ -198,13 +198,18 @@ resend_get_request(void* context) {
 
 	status = nyoci_outbound_send();
 
-	if(status) {
-		check_noerr(status);
-		fprintf(stderr,
-			"nyoci_outbound_send() returned error %d(%s).\n",
-			status,
-			nyoci_status_to_cstr(status));
-		goto bail;
+	switch (status) {
+		case NYOCI_STATUS_OK:
+		case NYOCI_STATUS_WAIT_FOR_SESSION:
+		case NYOCI_STATUS_WAIT_FOR_DNS:
+			break;
+		default:
+			check_noerr(status);
+			fprintf(stderr,
+				"nyoci_outbound_send() returned error %d(%s).\n",
+				status,
+				nyoci_status_to_cstr(status));
+			break;
 	}
 
 bail:
@@ -231,7 +236,9 @@ send_get_request(
 		flags |= NYOCI_TRANSACTION_KEEPALIVE;
 	}
 
-	nyoci_transaction_end(nyoci,&transaction);
+	if (transaction.active) {
+		nyoci_transaction_end(nyoci,&transaction);
+	}
 	nyoci_transaction_init(
 		&transaction,
 		flags, // Flags
@@ -371,7 +378,9 @@ tool_cmd_get(
 	}
 
 bail:
-	nyoci_transaction_end(nyoci,&transaction);
+	if (transaction.active) {
+		nyoci_transaction_end(nyoci,&transaction);
+	}
 	signal(SIGINT, previous_sigint_handler);
 	url_data = NULL;
 	return gRet;

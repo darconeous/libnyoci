@@ -130,7 +130,7 @@ NYOCI_API_EXTERN nyoci_node_t nyoci_node_get_root(nyoci_node_t node);
 NYOCI_API_EXTERN nyoci_status_t nyoci_node_router_handler(void* context);
 NYOCI_API_EXTERN nyoci_status_t nyoci_node_route(nyoci_node_t node, nyoci_request_handler_func* func, void** context);
 
-NYOCI_API_EXTERN nyoci_node_t nyoci_node_alloc();
+NYOCI_API_EXTERN nyoci_node_t nyoci_node_alloc(void);
 
 NYOCI_API_EXTERN nyoci_node_t nyoci_node_init(
 	nyoci_node_t self,

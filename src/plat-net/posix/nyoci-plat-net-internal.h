@@ -89,6 +89,8 @@
 #error Unsupported value for NYOCI_PLAT_NET_POSIX_FAMILY
 #endif // NYOCI_PLAT_NET_POSIX_FAMILY
 
+NYOCI_BEGIN_C_DECLS
+
 struct nyoci_plat_s {
 	int						mcfd_v6;	//!< For multicast
 	int						mcfd_v4;	//!< For multicast
@@ -123,5 +125,7 @@ NYOCI_INTERNAL_EXTERN ssize_t sendtofrom(
 	const struct sockaddr * saddr_to, socklen_t socklen_to,
 	const struct sockaddr * saddr_from, socklen_t socklen_from
 );
+
+NYOCI_END_C_DECLS
 
 #endif

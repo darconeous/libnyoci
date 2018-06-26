@@ -1,296 +1,291 @@
+/* src/config.h.  Generated from config.h.in by configure.  */
 /* src/config.h.in.  Generated from configure.ac by autoheader.  */
 
 /* rl_completion_entry_function has the wrong return type */
-#undef HAS_LIBEDIT_COMPLETION_ENTRY_BUG
+#define HAS_LIBEDIT_COMPLETION_ENTRY_BUG 1
 
 /* Define to 1 if you have the `alloca' function. */
-#undef HAVE_ALLOCA
+/* #undef HAVE_ALLOCA */
 
 /* Define to 1 if you have the <alloca.h> header file. */
-#undef HAVE_ALLOCA_H
+#define HAVE_ALLOCA_H 1
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
-#undef HAVE_DLFCN_H
+#define HAVE_DLFCN_H 1
 
 /* Define to 1 if you have the <errno.h> header file. */
-#undef HAVE_ERRNO_H
+#define HAVE_ERRNO_H 1
 
 /* Define to 1 if you have the `fprintf' function. */
-#undef HAVE_FPRINTF
+#define HAVE_FPRINTF 1
 
 /* Define to 1 if the system has the `deprecated' function attribute */
-#undef HAVE_FUNC_ATTRIBUTE_DEPRECATED
+#define HAVE_FUNC_ATTRIBUTE_DEPRECATED 1
 
 /* Define to 1 if the system has the `pure' function attribute */
-#undef HAVE_FUNC_ATTRIBUTE_PURE
+#define HAVE_FUNC_ATTRIBUTE_PURE 1
 
 /* Define to 1 if you have the `getline' function. */
-#undef HAVE_GETLINE
+#define HAVE_GETLINE 1
 
 /* Define to 1 if you have the `getloadavg' function. */
-#undef HAVE_GETLOADAVG
+#define HAVE_GETLOADAVG 1
 
 /* Define to 1 if you have the `gettimeofday' function. */
-#undef HAVE_GETTIMEOFDAY
+#define HAVE_GETTIMEOFDAY 1
 
 /* Define to 1 if you have the <inttypes.h> header file. */
-#undef HAVE_INTTYPES_H
+#define HAVE_INTTYPES_H 1
 
 /* Define to 1 if you have the `readline' library (-lreadline). */
-#undef HAVE_LIBREADLINE
+#define HAVE_LIBREADLINE 1
 
 /* Define to 1 if you have the `malloc' function. */
-#undef HAVE_MALLOC
+#define HAVE_MALLOC 1
 
 /* Define to 1 if you have the `memcmp' function. */
-#undef HAVE_MEMCMP
+#define HAVE_MEMCMP 1
 
 /* Define to 1 if you have the <memory.h> header file. */
-#undef HAVE_MEMORY_H
+#define HAVE_MEMORY_H 1
 
 /* Define to 1 if you have the `memset' function. */
-#undef HAVE_MEMSET
+#define HAVE_MEMSET 1
 
 /* Set if OpenSSL is present */
-#undef HAVE_OPENSSL
-
-/* Set if OpenSSL has DTLSv1_2_method() */
-#undef HAVE_OPENSSL_DTLSV1_2_METHOD
+/* #undef HAVE_OPENSSL */
 
 /* Set if OpenSSL has DTLSv1_method() */
-#undef HAVE_OPENSSL_DTLSV1_METHOD
+/* #undef HAVE_OPENSSL_DTLSV1_METHOD */
 
 /* Set if OpenSSL has DTLS_method() */
-#undef HAVE_OPENSSL_DTLS_METHOD
-
-/* Set if OpenSSL has HMAC_CTX_new() */
-#undef HAVE_OPENSSL_HMAC_CTX_NEW
+/* #undef HAVE_OPENSSL_DTLS_METHOD */
 
 /* Set if OpenSSL has SSL_CONF_CTX_new() */
-#undef HAVE_OPENSSL_SSL_CONF_CTX_NEW
+/* #undef HAVE_OPENSSL_SSL_CONF_CTX_NEW */
 
 /* Set if OpenSSL has SSL_CONF_finish() */
-#undef HAVE_OPENSSL_SSL_CONF_FINISH
+/* #undef HAVE_OPENSSL_SSL_CONF_FINISH */
 
 /* Define to 1 if you have the `printf' function. */
-#undef HAVE_PRINTF
+#define HAVE_PRINTF 1
 
 /* Define if you have POSIX threads libraries and header files. */
-#undef HAVE_PTHREAD
+#define HAVE_PTHREAD 1
 
 /* Have PTHREAD_PRIO_INHERIT. */
-#undef HAVE_PTHREAD_PRIO_INHERIT
+#define HAVE_PTHREAD_PRIO_INHERIT 1
 
 /* Define to 1 if you have the `rl_set_prompt' function. */
-#undef HAVE_RL_SET_PROMPT
+#define HAVE_RL_SET_PROMPT 1
 
 /* Define to 1 if you have the `setenv' function. */
-#undef HAVE_SETENV
+#define HAVE_SETENV 1
 
 /* Define to 1 if you have the `snprintf' function. */
-#undef HAVE_SNPRINTF
+#define HAVE_SNPRINTF 1
 
 /* Define to 1 if you have the `sprintf' function. */
-#undef HAVE_SPRINTF
+#define HAVE_SPRINTF 1
 
 /* Define to 1 if you have the <stdarg.h> header file. */
-#undef HAVE_STDARG_H
+#define HAVE_STDARG_H 1
 
 /* Define to 1 if you have the <stdbool.h> header file. */
-#undef HAVE_STDBOOL_H
+#define HAVE_STDBOOL_H 1
 
 /* Define to 1 if you have the <stddef.h> header file. */
-#undef HAVE_STDDEF_H
+#define HAVE_STDDEF_H 1
 
 /* Define to 1 if you have the <stdint.h> header file. */
-#undef HAVE_STDINT_H
+#define HAVE_STDINT_H 1
 
 /* Define to 1 if you have the <stdio.h> header file. */
-#undef HAVE_STDIO_H
+#define HAVE_STDIO_H 1
 
 /* Define to 1 if you have the <stdlib.h> header file. */
-#undef HAVE_STDLIB_H
+#define HAVE_STDLIB_H 1
 
 /* Define to 1 if you have the `stpncpy' function. */
-#undef HAVE_STPNCPY
+#define HAVE_STPNCPY 1
 
 /* Define to 1 if you have the `strchr' function. */
-#undef HAVE_STRCHR
+#define HAVE_STRCHR 1
 
 /* Define to 1 if you have the `strdup' function. */
-#undef HAVE_STRDUP
+#define HAVE_STRDUP 1
 
 /* Define to 1 if you have the `strerror' function. */
-#undef HAVE_STRERROR
+#define HAVE_STRERROR 1
 
 /* Define to 1 if you have the <strings.h> header file. */
-#undef HAVE_STRINGS_H
+#define HAVE_STRINGS_H 1
 
 /* Define to 1 if you have the <string.h> header file. */
-#undef HAVE_STRING_H
+#define HAVE_STRING_H 1
 
 /* Define to 1 if you have the `strlcat' function. */
-#undef HAVE_STRLCAT
+#define HAVE_STRLCAT 1
 
 /* Define to 1 if you have the `strlcpy' function. */
-#undef HAVE_STRLCPY
+#define HAVE_STRLCPY 1
 
 /* Define to 1 if you have the `strndup' function. */
-#undef HAVE_STRNDUP
+#define HAVE_STRNDUP 1
 
 /* Define to 1 if you have the `strstr' function. */
-#undef HAVE_STRSTR
+#define HAVE_STRSTR 1
 
 /* Define to 1 if you have the `strtol' function. */
-#undef HAVE_STRTOL
+#define HAVE_STRTOL 1
 
 /* Define to 1 if you have the <sys/stat.h> header file. */
-#undef HAVE_SYS_STAT_H
+#define HAVE_SYS_STAT_H 1
 
 /* Define to 1 if you have the <sys/types.h> header file. */
-#undef HAVE_SYS_TYPES_H
+#define HAVE_SYS_TYPES_H 1
 
 /* Define to 1 if you have the <unistd.h> header file. */
-#undef HAVE_UNISTD_H
+#define HAVE_UNISTD_H 1
 
 /* Define to 1 if you have the `vsnprintf' function. */
-#undef HAVE_VSNPRINTF
+#define HAVE_VSNPRINTF 1
 
 /* Define to 1 if you have the `vsprintf' function. */
-#undef HAVE_VSPRINTF
+#define HAVE_VSPRINTF 1
 
 /* Define to the sub-directory where libtool stores uninstalled libraries. */
-#undef LT_OBJDIR
+#define LT_OBJDIR ".libs/"
 
 /* . */
-#undef NYOCI_API_EXTERN
+#define NYOCI_API_EXTERN __attribute__((visibility("default"))) extern
 
 /* . */
-#undef NYOCI_AVOID_MALLOC
+/* #undef NYOCI_AVOID_MALLOC */
 
 /* . */
-#undef NYOCI_AVOID_PRINTF
+/* #undef NYOCI_AVOID_PRINTF */
 
 /* . */
-#undef NYOCI_CONF_NODE_ROUTER
+/* #undef NYOCI_CONF_NODE_ROUTER */
 
 /* . */
-#undef NYOCI_CONF_TRANS_ENABLE_BLOCK2
+/* #undef NYOCI_CONF_TRANS_ENABLE_BLOCK2 */
 
 /* . */
-#undef NYOCI_CONF_TRANS_ENABLE_OBSERVING
+/* #undef NYOCI_CONF_TRANS_ENABLE_OBSERVING */
 
 /* . */
-#undef NYOCI_EMBEDDED
+/* #undef NYOCI_EMBEDDED */
 
 /* . */
-#undef NYOCI_INTERNAL_EXTERN
+#define NYOCI_INTERNAL_EXTERN __attribute__((visibility("default"))) extern
 
 /* . */
-#undef NYOCI_MAX_OBSERVERS
+/* #undef NYOCI_MAX_OBSERVERS */
 
 /* . */
-#undef NYOCI_MAX_VHOSTS
+/* #undef NYOCI_MAX_VHOSTS */
 
 /* LibNyoci network abstraction */
-#undef NYOCI_PLAT_NET
+#define NYOCI_PLAT_NET posix
 
 /* . */
-#undef NYOCI_PLAT_NET_POSIX_FAMILY
+/* #undef NYOCI_PLAT_NET_POSIX_FAMILY */
 
 /* LibNyoci TLS abstraction */
-#undef NYOCI_PLAT_TLS
+/* #undef NYOCI_PLAT_TLS */
 
 /* . */
-#undef NYOCI_SINGLETON
+/* #undef NYOCI_SINGLETON */
 
 /* . */
-#undef NYOCI_USE_CASCADE_COUNT
+/* #undef NYOCI_USE_CASCADE_COUNT */
 
 /* Name of package */
-#undef PACKAGE
+#define PACKAGE "libnyoci"
 
 /* Define to the address where bug reports for this package should be sent. */
-#undef PACKAGE_BUGREPORT
+#define PACKAGE_BUGREPORT "https://github.com/darconeous/libnyoci/"
 
 /* Define to the full name of this package. */
-#undef PACKAGE_NAME
+#define PACKAGE_NAME "LibNyoci"
 
 /* Define to the full name and version of this package. */
-#undef PACKAGE_STRING
+#define PACKAGE_STRING "LibNyoci 0.07.00rc1"
 
 /* Define to the one symbol short name of this package. */
-#undef PACKAGE_TARNAME
+#define PACKAGE_TARNAME "libnyoci"
 
 /* Define to the home page for this package. */
-#undef PACKAGE_URL
+#define PACKAGE_URL "http://libnyoci.org/"
 
 /* Define to the version of this package. */
-#undef PACKAGE_VERSION
+#define PACKAGE_VERSION "0.07.00rc1"
 
 /* Define to necessary symbol if this constant uses a non-standard name on
    your system. */
-#undef PTHREAD_CREATE_JOINABLE
+/* #undef PTHREAD_CREATE_JOINABLE */
 
 /* Source version */
-#undef SOURCE_VERSION
+#define SOURCE_VERSION "0.07.00rc1-6-g5ad1f3d"
 
 /* Define to 1 if you have the ANSI C header files. */
-#undef STDC_HEADERS
+#define STDC_HEADERS 1
 
 /* Define to 1 if you can safely include both <sys/time.h> and <time.h>. */
-#undef TIME_WITH_SYS_TIME
+#define TIME_WITH_SYS_TIME 1
 
 /* Enable extensions on AIX 3, Interix.  */
 #ifndef _ALL_SOURCE
-# undef _ALL_SOURCE
+# define _ALL_SOURCE 1
 #endif
 /* Enable GNU extensions on systems that have them.  */
 #ifndef _GNU_SOURCE
-# undef _GNU_SOURCE
+# define _GNU_SOURCE 1
 #endif
 /* Enable threading extensions on Solaris.  */
 #ifndef _POSIX_PTHREAD_SEMANTICS
-# undef _POSIX_PTHREAD_SEMANTICS
+# define _POSIX_PTHREAD_SEMANTICS 1
 #endif
 /* Enable extensions on HP NonStop.  */
 #ifndef _TANDEM_SOURCE
-# undef _TANDEM_SOURCE
+# define _TANDEM_SOURCE 1
 #endif
 /* Enable general extensions on Solaris.  */
 #ifndef __EXTENSIONS__
-# undef __EXTENSIONS__
+# define __EXTENSIONS__ 1
 #endif
 
 
 /* Version number of package */
-#undef VERSION
+#define VERSION "0.07.00rc1"
 
 /* Define to 1 if on MINIX. */
-#undef _MINIX
+/* #undef _MINIX */
 
 /* Define to 2 if the system does not provide POSIX.1 features except with
    this defined. */
-#undef _POSIX_1_SOURCE
+/* #undef _POSIX_1_SOURCE */
 
 /* Define to 1 if you need to in order for `stat' and other things to work. */
-#undef _POSIX_SOURCE
+/* #undef _POSIX_SOURCE */
 
 /* Define to empty if `const' does not conform to ANSI C. */
-#undef const
+/* #undef const */
 
 /* Define to `__inline__' or `__inline' if that's what the C compiler
    calls it, or to nothing if 'inline' is not supported under any name.  */
 #ifndef __cplusplus
-#undef inline
+/* #undef inline */
 #endif
 
 /* Define to `unsigned int' if <sys/types.h> does not define. */
-#undef size_t
+/* #undef size_t */
 
 /* Define to `int' if <sys/types.h> does not define. */
-#undef ssize_t
+/* #undef ssize_t */
 
 /* Define to empty if the keyword `volatile' does not work. Warning: valid
    code using `volatile' can become incorrect without. Disable with care. */
-#undef volatile
+/* #undef volatile */

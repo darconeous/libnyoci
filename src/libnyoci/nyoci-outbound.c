@@ -398,6 +398,7 @@ nyoci_outbound_set_uri(
 	NYOCI_NON_RECURSIVE char* uri_copy;
 
 	memset((void*)&components, 0, sizeof(components));
+	toport = COAP_DEFAULT_PORT;
 	uri_copy = NULL;
 
 	require_action(uri, bail, ret = NYOCI_STATUS_INVALID_ARGUMENT);
@@ -628,7 +629,7 @@ nyoci_outbound_append_content_formatted(const char* fmt, ...)
 	va_list args;
 	nyoci_t const self = nyoci_get_current_instance();
 	char* content = nyoci_outbound_get_content_ptr(NULL);
-	coap_size_t len = nyoci_outbound_get_space_remaining();
+	const coap_size_t len = nyoci_outbound_get_space_remaining();
 	int fmtlen;
 
 	require(content!=NULL, bail);
@@ -645,7 +646,7 @@ nyoci_outbound_append_content_formatted(const char* fmt, ...)
 
 	fmtlen += self->outbound.content_len;
 
-	ret = nyoci_outbound_set_content_len((coap_size_t)len);
+	ret = nyoci_outbound_set_content_len((coap_size_t)fmtlen);
 
 bail:
 	va_end(args);

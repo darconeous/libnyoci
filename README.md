@@ -62,7 +62,9 @@ To just build the latest tagged stable release:
 For bleeding-edge:
 
 	$ git checkout master
-	$ git archive origin/autoconf/master | tar xv
+	$ git archive origin/autoconf/master | tar xvm
+	  # Next line is a work-around for timestamp problems
+	$ touch aclocal.m4 && touch configure && touch `find . -name '*.in'`
 	$ ./configure
 	$ make
 	$ sudo make install
@@ -87,10 +89,6 @@ To get the bleeding-edge release:
 
 	$ brew tap darconeous/embedded
 	$ brew install libnyoci --HEAD
-
-Node: This is mostly for people who just want to use `nyocictl` (described below).
-If you want to compile against LibNyoci, you'll currently need to grab the sources
-and build against them directly.
 
 ## Getting Started ##
 
@@ -127,9 +125,9 @@ enabling/disabling observing, etc.
 
 ## Contiki Support ##
 
-LibNyoci supports [Contiki](http://contiki-os.org/). To build the Contiki
-examples, just make sure that the `CONTIKI` environment variable is set point
-to your Contiki root, like so:
+LibNyoci supports [Contiki](http://contiki-os.org/) (albeit a rather old version).
+To build the Contiki examples, just make sure that the `CONTIKI` environment
+variable is set point to your Contiki root, like so:
 
 	$ cd contiki-src/examples/nyoci-simple
 	$ make CONTIKI=~/Projects/contiki TARGET=minimal-net
@@ -174,8 +172,15 @@ Here are a few examples of how you can use it:
 
 ### List of Public Test Servers ###
 
+These servers run a subset of the plugtest suite:
+
  * <coap://coap.me/>
  * <coap://vs0.inf.ethz.ch/>
+
+These are other publically-accessable example/test servers:
+
+ * <coap://leshan.eclipse.org>/<coaps://leshan.eclipse.org>
+ * <coap://californium.eclipse.org>/<coaps://californium.eclipse.org>
 
 ## Authors and Significant Contributors ##
 
@@ -183,4 +188,4 @@ Here are a few examples of how you can use it:
 
 ### Special Thanks ###
 
- * [Paulo Brizolara](https://github.com/paulobrizolara)
+ * [Paulo Brizolara](https://github.com/paulobrizolara), for help with IPv4 multicast support.

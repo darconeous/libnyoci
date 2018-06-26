@@ -28,6 +28,7 @@
 #include <libnyoci/url-helpers.h>
 #include <signal.h>
 #include "nyocictl.h"
+#include "string-utils.h"
 
 static arg_list_item_t option_list[] = {
 	{ 'h', "help",				  NULL, "Print Help" },
@@ -124,7 +125,7 @@ bail:
 }
 
 
-nyoci_status_t
+static nyoci_status_t
 resend_post_request(struct post_request_s *request) {
 	nyoci_status_t status = 0;
 
@@ -143,13 +144,18 @@ resend_post_request(struct post_request_s *request) {
 	status = nyoci_outbound_send();
 	require_noerr(status, bail);
 
-	if(status) {
-		check(!status);
-		fprintf(stderr,
-			"nyoci_outbound_send() returned error %d(%s).\n",
-			status,
-			nyoci_status_to_cstr(status));
-		goto bail;
+	switch (status) {
+		case NYOCI_STATUS_OK:
+		case NYOCI_STATUS_WAIT_FOR_SESSION:
+		case NYOCI_STATUS_WAIT_FOR_DNS:
+			break;
+		default:
+			check_noerr(status);
+			fprintf(stderr,
+				"nyoci_outbound_send() returned error %d(%s).\n",
+				status,
+				nyoci_status_to_cstr(status));
+			break;
 	}
 
 bail:
@@ -215,7 +221,7 @@ tool_cmd_post(
 
 	BEGIN_LONG_ARGUMENTS(gRet)
 	HANDLE_LONG_ARGUMENT("include") post_show_headers = true;
-	HANDLE_LONG_ARGUMENT("outbound-slice-size") outbound_slice_size = strtol(argv[++i], NULL, 0);
+	HANDLE_LONG_ARGUMENT("outbound-slice-size") outbound_slice_size = (int)strtol(argv[++i], NULL, 0);
 	HANDLE_LONG_ARGUMENT("content-type") content_type = coap_content_type_from_cstr(argv[++i]);
 	HANDLE_LONG_ARGUMENT("content-format") content_type = coap_content_type_from_cstr(argv[++i]);
 	HANDLE_LONG_ARGUMENT("non") post_tt = COAP_TRANS_TYPE_NONCONFIRMABLE;

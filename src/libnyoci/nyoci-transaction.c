@@ -35,6 +35,7 @@
 #include "libnyoci.h"
 #include "nyoci-internal.h"
 #include "nyoci-logging.h"
+#include "nyoci-missing.h"
 
 #if NYOCI_AVOID_MALLOC && NYOCI_TRANSACTION_POOL_SIZE
 #warning Transaction pool should be moved into the LibNyoci instance.
@@ -75,7 +76,7 @@ nyoci_transaction_compare_msg_id(
 }
 #endif
 
-nyoci_transaction_t
+static nyoci_transaction_t
 nyoci_transaction_find_via_msg_id(nyoci_t self, coap_msg_id_t msg_id) {
 	NYOCI_SINGLETON_SELF_HOOK;
 
@@ -95,7 +96,7 @@ nyoci_transaction_find_via_msg_id(nyoci_t self, coap_msg_id_t msg_id) {
 
 }
 
-nyoci_transaction_t
+static nyoci_transaction_t
 nyoci_transaction_find_via_token(nyoci_t self, coap_msg_id_t token) {
 	NYOCI_SINGLETON_SELF_HOOK;
 
@@ -468,6 +469,7 @@ nyoci_transaction_begin(
 	NYOCI_SINGLETON_SELF_HOOK;
 
 	require_action(handler != NULL, bail, ret = NYOCI_STATUS_INVALID_ARGUMENT);
+	require_action(self != NULL, bail, ret = NYOCI_STATUS_INVALID_ARGUMENT);
 
 	DEBUG_PRINTF("nyoci_transaction_begin: %p",handler);
 

@@ -110,7 +110,7 @@ bail:
 	return NYOCI_STATUS_OK;
 }
 
-nyoci_status_t
+static nyoci_status_t
 resend_delete_request(const char* url) {
 	nyoci_status_t status = 0;
 

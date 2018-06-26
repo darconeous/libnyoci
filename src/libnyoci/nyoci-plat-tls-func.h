@@ -26,8 +26,8 @@
 **	SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef NYOCI_nyoci_plat_tls_h
-#define NYOCI_nyoci_plat_tls_h
+#ifndef NYOCI_nyoci_plat_tls_func_h
+#define NYOCI_nyoci_plat_tls_func_h
 
 #if !defined(NYOCI_INCLUDED_FROM_LIBNYOCI_H) && !defined(BUILDING_LIBNYOCI)
 #error "Do not include this header directly, include <libnyoci/libnyoci.h> instead"
@@ -40,8 +40,12 @@
 #define nyoci_plat_tls_set_context(self,...)		nyoci_plat_tls_set_context(__VA_ARGS__)
 #define nyoci_plat_tls_inbound_packet_process(self,...)		nyoci_plat_tls_inbound_packet_process(__VA_ARGS__)
 #define nyoci_plat_tls_outbound_packet_process(self,...)		nyoci_plat_tls_outbound_packet_process(__VA_ARGS__)
+#define nyoci_plat_tls_set_client_psk_callback(self,...)        nyoci_plat_tls_set_client_psk_callback(__VA_ARGS__)
+#define nyoci_plat_tls_set_server_psk_callback(self,...)        nyoci_plat_tls_set_server_psk_callback(__VA_ARGS__)
+#define nyoci_plat_tls_set_psk_hint(self,...)                   nyoci_plat_tls_set_psk_hint(__VA_ARGS__)
 #endif
 
+NYOCI_API_EXTERN nyoci_status_t nyoci_plat_tls_init(void);
 
 //! Sets the security context to be associated with this LibNyoci instance.
 /*!	The type of object that this pointer referrs to depends on
@@ -53,10 +57,10 @@
 **	security settings.
 */
 NYOCI_API_EXTERN nyoci_status_t nyoci_plat_tls_set_context(
-	nyoci_t self, void* context
+	nyoci_t self, nyoci_plat_tls_context_t context
 );
 
-NYOCI_API_EXTERN void* nyoci_plat_tls_get_context(nyoci_t self);
+NYOCI_API_EXTERN nyoci_plat_tls_context_t nyoci_plat_tls_get_context(nyoci_t self);
 
 //! Returns a pointer to the current security session object.
 /*!	The type of object that this pointer referrs to depends on
@@ -65,7 +69,7 @@ NYOCI_API_EXTERN void* nyoci_plat_tls_get_context(nyoci_t self);
 **
 **	This function can only be meaningfuly called from a callback.
 */
-NYOCI_API_EXTERN void* nyoci_plat_tls_get_current_session(void);
+NYOCI_API_EXTERN nyoci_plat_tls_session_t nyoci_plat_tls_get_current_session(void);
 
 //!	Sets the intended target hostname for the current security session.
 /*!	If the remote host fails to validate against this hostname,
@@ -74,6 +78,27 @@ NYOCI_API_EXTERN void* nyoci_plat_tls_get_current_session(void);
 **	This function can only be meaningfuly called from a callback.
 */
 NYOCI_API_EXTERN nyoci_status_t nyoci_plat_tls_set_remote_hostname(const char* hostname);
+
+typedef unsigned int (*nyoci_plat_tls_client_psk_callback_func)(
+	void* context,
+	const char *hint,
+	char *identity, unsigned int max_identity_len,
+	unsigned char *psk, unsigned int max_psk_len
+);
+
+typedef unsigned int (*nyoci_plat_tls_server_psk_callback_func)(
+	void* context,
+	const char *identity,
+	unsigned char *psk, unsigned int max_psk_len
+);
+
+NYOCI_API_EXTERN nyoci_status_t nyoci_plat_tls_set_client_psk_callback(nyoci_t self, nyoci_plat_tls_client_psk_callback_func cb, void* context);
+
+NYOCI_API_EXTERN nyoci_status_t nyoci_plat_tls_set_server_psk_callback(nyoci_t self, nyoci_plat_tls_server_psk_callback_func cb, void* context);
+
+NYOCI_API_EXTERN const char* nyoci_plat_tls_get_psk_identity(void);
+
+NYOCI_API_EXTERN nyoci_status_t nyoci_plat_tls_set_psk_hint(nyoci_t self, const char* hint);
 
 //! Called by the platform to dispatch inbound DTLS packets.
 NYOCI_API_EXTERN nyoci_status_t nyoci_plat_tls_inbound_packet_process(
