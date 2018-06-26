@@ -84,6 +84,7 @@ parse_link_format(char* content, coap_size_t content_length, void* context) {
 			char* desc = 0;
 			char* v = 0;
 			char* sh_url = 0;
+			bool obs = false;
 			coap_content_type_t type = COAP_CONTENT_TYPE_UNKNOWN;
 			int uri_len = 0;
 
@@ -99,7 +100,7 @@ parse_link_format(char* content, coap_size_t content_length, void* context) {
 			if(iter && *iter == ';') {
 				while(iter && (iter < end)) {
 					char* key;
-					char* value;
+					char* value = NULL;
 					char endchar;
 
 					iter++;
@@ -110,11 +111,19 @@ parse_link_format(char* content, coap_size_t content_length, void* context) {
 
 					if(*iter==';') {
 						*iter = 0;
+						if (0 == strcmp(key, "obs")) {
+							obs = true;
+						}
 						continue;
 					}
 
-					if(!*iter || *iter==',')
+					if(!*iter || *iter==',') {
+						*iter = 0;
+						if (0 == strcmp(key, "obs")) {
+							obs = true;
+						}
 						break;
+					}
 
 					*iter++ = 0;
 
@@ -156,18 +165,21 @@ parse_link_format(char* content, coap_size_t content_length, void* context) {
 					}
 					// TODO: Unquote...?
 					//url_decode_cstr_inplace(value);
-					if(0 == strcmp(key, "n"))
+					if(0 == strcmp(key, "n")) {
 						name = value;
-					else if(!name && 0 == strcmp(key, "rt"))
+					} else if(!name && 0 == strcmp(key, "rt")) {
 						name = value;
-					else if(0 == strcmp(key, "title"))
+					} else if(0 == strcmp(key, "title")) {
 						desc = value;
-					else if(0 == strcmp(key, "v"))
+					} else if(0 == strcmp(key, "v")) {
 						v = value;
-					else if(0 == strcmp(key, "ct"))
+					} else if(0 == strcmp(key, "ct")) {
 						type = (coap_content_type_t)strtol(value, NULL, 0);
-					else if(0 == strcmp(key, "sh"))
+					} else if (0 == strcmp(key, "obs")) {
+						obs = !!strtol(value, NULL, 0);
+					} else if(0 == strcmp(key, "sh")) {
 						sh_url = value;
+					}
 					//printf("%s = %s\n",key,value);
 					if(endchar == ',' || (iter >= end))
 						break;
@@ -228,7 +240,13 @@ parse_link_format(char* content, coap_size_t content_length, void* context) {
 						sh_url);
 				if(type != COAP_CONTENT_TYPE_UNKNOWN) fprintf(stdout,"[%s] ",
 						coap_content_type_to_cstr(type));
-				if(desc) fprintf(stdout,"(%s) ",desc);
+				if(desc) {
+					fprintf(stdout,"(%s) ",desc);
+				}
+
+				if(obs) {
+					fprintf(stdout,"OBS ");
+				}
 			}
 			fprintf(stdout,"\n");
 		} else {
