@@ -413,14 +413,19 @@ nyoci_outbound_set_uri(
 		// in the packet buffer, since this is temporary anyway...
 		// It helps a bunch that we know the user hasn't written
 		// any content yet (because that would be an API violation)
-		if (nyoci_outbound_get_space_remaining() > strlen(uri) + 8) {
-			uri_copy = self->outbound.content_ptr + self->outbound.content_len;
-
-			// The options section may be expanding as we parse this, so
-			// we should move ahead by a few bytes. We are helped out
-			// by the fact that we will be writing the options in the
-			// same order they appear in the URL.
-			uri_copy += 8;
+		//
+		// The options section may be expanding as we parse this, so
+		// we require at least `uri_padding` bytes of padding between
+		// the end of the options and the start of the URI are free.
+		// We are ultimately helped out by the fact that we will be
+		// writing the options in the same order they appear in the
+		// URL, and that we will ultimately be copying the values
+		// using `memmove()`.
+		static const int uri_padding = 16;
+		if (nyoci_outbound_get_space_remaining() > strlen(uri) + uri_padding) {
+			uri_copy = (char*)self->outbound.packet
+				+ self->outbound.max_packet_len
+				- (strlen(uri) + 1); // Plus 1 for NUL
 
 			strcpy(uri_copy, uri);
 		}

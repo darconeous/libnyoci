@@ -162,7 +162,7 @@ coap_encode_option(
 
 	buffer += value_offset;
 
-	memcpy(buffer, value, len);
+	memmove(buffer, value, len);
 
 	buffer += len;
 
