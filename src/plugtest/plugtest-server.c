@@ -77,7 +77,8 @@ plugtest_test_handler(nyoci_node_t node)
 		goto bail;
 	}
 
-	nyoci_inbound_get_path(content, NYOCI_GET_PATH_LEADING_SLASH|NYOCI_GET_PATH_INCLUDE_QUERY);
+	nyoci_inbound_get_path(content, max_len, NYOCI_GET_PATH_LEADING_SLASH|NYOCI_GET_PATH_INCLUDE_QUERY);
+	assert(strlen(content)<=max_len);
 	strlcat(content,"\nPlugtest!\nMethod = ",max_len);
 	strlcat(content,coap_code_to_cstr(method),max_len);
 	strlcat(content,"\n",max_len);
@@ -100,6 +101,7 @@ plugtest_test_handler(nyoci_node_t node)
 		}
 	}
 
+	assert(strlen(content)<=max_len);
 	nyoci_outbound_set_content_len((coap_size_t)strlen(content));
 
 	ret = nyoci_outbound_send();
