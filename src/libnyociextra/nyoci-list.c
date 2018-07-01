@@ -83,9 +83,12 @@ nyoci_node_list_request_handler(
 	}
 
 	if (nyoci_inbound_option_strequal_const(COAP_OPTION_URI_PATH,"")) {
+		if (prefix != NULL && prefix[0] != 0) {
+			prefix = NULL;
+		}
+
 		// Eat the trailing '/'.
 		nyoci_inbound_next_option(NULL, NULL);
-		if(prefix[0]) prefix = NULL;
 	}
 
 	// Check over the headers to make sure they are sane.
