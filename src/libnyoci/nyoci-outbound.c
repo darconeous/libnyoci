@@ -303,10 +303,10 @@ nyoci_outbound_add_options_up_to_key_(
 	(void)self;
 
 #if NYOCI_CONF_TRANS_ENABLE_BLOCK2
-	if(	(self->current_transaction
-		&& self->current_transaction->next_block2)
-		&& self->outbound.last_option_key<COAP_OPTION_BLOCK2
-		&& key>COAP_OPTION_BLOCK2
+	if ( (self->current_transaction != NULL)
+	  && (self->current_transaction->next_block2 != 0)
+	  && (self->outbound.last_option_key < COAP_OPTION_BLOCK2)
+	  && (key > COAP_OPTION_BLOCK2)
 	) {
 		uint32_t block2 = htonl(self->current_transaction->next_block2);
 		uint8_t size = nyoci_calc_uint32_option_size(block2);
@@ -319,11 +319,14 @@ nyoci_outbound_add_options_up_to_key_(
 #endif
 
 #if NYOCI_CONF_TRANS_ENABLE_OBSERVING
-	if(	(self->current_transaction && self->current_transaction->flags&NYOCI_TRANSACTION_OBSERVE)
-		&& self->outbound.last_option_key<COAP_OPTION_OBSERVE
-		&& key>COAP_OPTION_OBSERVE
+	if ( (self->current_transaction != NULL)
+	  && (self->current_transaction->flags & NYOCI_TRANSACTION_OBSERVE == NYOCI_TRANSACTION_OBSERVE)
+	  && (self->outbound.last_option_key < COAP_OPTION_OBSERVE)
+	  && (key > COAP_OPTION_OBSERVE)
 	) {
-		if(self->outbound.packet->code && self->outbound.packet->code<COAP_RESULT_100) {
+		if ( (self->outbound.packet->code != 0)
+		  && (self->outbound.packet->code < COAP_RESULT_100)
+		) {
 			// For sending a request.
 			ret = nyoci_outbound_add_option_(
 				COAP_OPTION_OBSERVE,
@@ -335,9 +338,9 @@ nyoci_outbound_add_options_up_to_key_(
 #endif
 
 #if NYOCI_USE_CASCADE_COUNT
-	if(	self->outbound.last_option_key<COAP_OPTION_CASCADE_COUNT
-		&& key>COAP_OPTION_CASCADE_COUNT
-		&& self->cascade_count
+	if ( self->outbound.last_option_key < COAP_OPTION_CASCADE_COUNT
+	  && key > COAP_OPTION_CASCADE_COUNT
+	  && self->cascade_count != 0
 	) {
 		uint8_t cc = self->cascade_count-1;
 		ret = nyoci_outbound_add_option_(
@@ -362,8 +365,8 @@ nyoci_outbound_add_option(
 
 #if NYOCI_CONF_TRANS_ENABLE_BLOCK2
 	if ( key == COAP_OPTION_BLOCK2
-	  && nyoci_get_current_instance()->current_transaction
-	  && nyoci_get_current_instance()->current_transaction->next_block2
+	  && nyoci_get_current_instance()->current_transaction != NULL
+	  && nyoci_get_current_instance()->current_transaction->next_block2 != 0
 	) {
 		goto bail;
 	}
