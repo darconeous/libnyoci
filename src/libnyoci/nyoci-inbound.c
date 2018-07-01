@@ -119,10 +119,10 @@ nyoci_inbound_next_option(const uint8_t** value, coap_size_t* len) {
 			value,
 			len
 		);
-
 	} else {
 		self->inbound.last_option_key = COAP_OPTION_INVALID;
 	}
+
 	return self->inbound.last_option_key;
 }
 
@@ -141,7 +141,6 @@ nyoci_inbound_peek_option(const uint8_t** value, coap_size_t* len) {
 			value,
 			len
 		);
-
 	} else {
 		ret = COAP_OPTION_INVALID;
 	}
@@ -178,7 +177,7 @@ nyoci_inbound_option_strequal(coap_option_key_t key,const char* cstr) {
 // MARK: Nontrivial inbound getters
 
 char*
-nyoci_inbound_get_path(char* where, uint8_t flags)
+nyoci_inbound_get_path(char* where, coap_size_t maxlen, uint8_t flags)
 {
 	nyoci_t const self = nyoci_get_current_instance();
 
@@ -190,9 +189,14 @@ nyoci_inbound_get_path(char* where, uint8_t flags)
 	coap_option_key_t key;
 	char* iter;
 
+	if (maxlen <= 1) {
+		goto bail;
+	}
+
 #if !NYOCI_AVOID_MALLOC
 	if (!where) {
 		where = calloc(1, NYOCI_MAX_URI_LENGTH + 1);
+		maxlen = NYOCI_MAX_URI_LENGTH;
 	}
 #endif
 
@@ -212,10 +216,12 @@ nyoci_inbound_get_path(char* where, uint8_t flags)
 
 	while (nyoci_inbound_next_option((const uint8_t**)&filename, &filename_len)==COAP_OPTION_URI_PATH) {
 		char old_end = filename[filename_len];
-		if(iter!=where || (flags&NYOCI_GET_PATH_LEADING_SLASH))
+		require_action(iter - where <= maxlen-1, bail, *iter=0);
+		if(iter!=where || (flags&NYOCI_GET_PATH_LEADING_SLASH)) {
 			*iter++='/';
+		}
 		filename[filename_len] = 0;
-		iter+=url_encode_cstr(iter, filename, NYOCI_MAX_URI_LENGTH-(iter-where));
+		iter+=url_encode_cstr(iter, filename, maxlen-(iter-where));
 		filename[filename_len] = old_end;
 	}
 
@@ -227,10 +233,12 @@ nyoci_inbound_get_path(char* where, uint8_t flags)
 			nyoci_inbound_next_option(NULL,NULL);
 		}
 		if (key == COAP_OPTION_URI_QUERY) {
+			require_action(iter - where <= maxlen - 1, bail, *iter=0);
 			*iter++='?';
 			while (nyoci_inbound_next_option((const uint8_t**)&filename, &filename_len)==COAP_OPTION_URI_QUERY) {
 				char old_end = filename[filename_len];
 				char* equal_sign;
+				require_action(iter - where <= maxlen - 1, bail, *iter=0);
 
 				if (iter[-1] != '?') {
 					*iter++=';';
@@ -243,11 +251,12 @@ nyoci_inbound_get_path(char* where, uint8_t flags)
 					*equal_sign = 0;
 				}
 
-				iter+=url_encode_cstr(iter, filename, NYOCI_MAX_URI_LENGTH-(iter-where));
+				iter+=url_encode_cstr(iter, filename, maxlen-(iter-where));
+				require_action(iter - where <= maxlen - 1, bail, *iter=0);
 
 				if (equal_sign) {
 					*iter++='=';
-					iter+=url_encode_cstr(iter, equal_sign+1, NYOCI_MAX_URI_LENGTH-(iter-where));
+					iter+=url_encode_cstr(iter, equal_sign+1, maxlen-(iter-where));
 					*equal_sign = '=';
 				}
 				filename[filename_len] = old_end;

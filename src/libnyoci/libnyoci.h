@@ -91,7 +91,7 @@ NYOCI_BEGIN_C_DECLS
 #define NYOCI_LIBRARY_VERSION_CHECK()	do { } while(0)
 #else
 #ifndef ___NYOCI_CONFIG_ID
-#define ___NYOCI_CONFIG_ID 0
+#define ___NYOCI_CONFIG_ID 1
 #endif
 NYOCI_API_EXTERN void ___nyoci_check_version(uint32_t x);
 #define NYOCI_LIBRARY_VERSION_CHECK()	___nyoci_check_version(___NYOCI_CONFIG_ID)
@@ -392,7 +392,7 @@ NYOCI_API_EXTERN bool nyoci_inbound_option_strequal(coap_option_key_t key, const
 #define NYOCI_GET_PATH_INCLUDE_QUERY		(1<<2)
 
 //!	Get a string representation of the destination path in the inbound packet.
-NYOCI_API_EXTERN char* nyoci_inbound_get_path(char* where, uint8_t flags);
+NYOCI_API_EXTERN char* nyoci_inbound_get_path(char* where, coap_size_t maxlen, uint8_t flags);
 
 /*!	@} */
 
