@@ -612,10 +612,16 @@ nyoci_outbound_get_content_ptr(coap_size_t* max_len)
 }
 
 nyoci_status_t
-nyoci_outbound_set_content_len(coap_size_t len)
+nyoci_outbound_set_content_len(coap_size_t content_len)
 {
-	nyoci_get_current_instance()->outbound.content_len = len;
-	return NYOCI_STATUS_OK;
+	nyoci_status_t ret = NYOCI_STATUS_MESSAGE_TOO_BIG;
+	nyoci_t const self = nyoci_get_current_instance();
+	const coap_size_t header_len = (coap_size_t)(self->outbound.content_ptr-(char*)self->outbound.packet);
+	require(header_len+content_len <= self->outbound.max_packet_len, bail);
+	self->outbound.content_len = content_len;
+	ret = NYOCI_STATUS_OK;
+bail:
+	return ret;
 }
 
 
