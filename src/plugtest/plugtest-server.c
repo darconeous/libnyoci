@@ -297,8 +297,10 @@ plugtest_large_handler(
 			if(key == COAP_OPTION_BLOCK2) {
 				uint8_t i;
 				block_option = 0;
-				for(i = 0; i < value_len; i++)
+				require_action(value_len<=3,bail,ret=NYOCI_STATUS_INVALID_ARGUMENT);
+				for(i = 0; i < value_len; i++) {
 					block_option = (block_option << 8) + value[i];
+				}
 			}
 		}
 	}
@@ -322,12 +324,13 @@ plugtest_large_handler(
 		block_start = block_info.block_offset;
 		block_stop = block_info.block_offset + block_info.block_size;
 
-		if(max_len<(block_stop-block_start) && block_option!=0 && !block_info.block_offset) {
+		if(max_len<(block_stop-block_start) && ((block_option&0x7)!=0) && !block_info.block_offset) {
 			block_option--;
 			block_stop = 0;
 			continue;
 		}
-	} while(0==block_stop);
+		break;
+	} while(true);
 
 	require_action(block_start<resource_length,bail,ret=NYOCI_STATUS_INVALID_ARGUMENT);
 
