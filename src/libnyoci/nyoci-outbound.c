@@ -320,7 +320,7 @@ nyoci_outbound_add_options_up_to_key_(
 
 #if NYOCI_CONF_TRANS_ENABLE_OBSERVING
 	if ( (self->current_transaction != NULL)
-	  && (self->current_transaction->flags & NYOCI_TRANSACTION_OBSERVE == NYOCI_TRANSACTION_OBSERVE)
+	  && ((self->current_transaction->flags & NYOCI_TRANSACTION_OBSERVE) == NYOCI_TRANSACTION_OBSERVE)
 	  && (self->outbound.last_option_key < COAP_OPTION_OBSERVE)
 	  && (key > COAP_OPTION_OBSERVE)
 	) {
