@@ -76,8 +76,8 @@ parse_link_format(char* content, coap_size_t content_length, void* context) {
 	int col_width = 16;
 	bool istty = isatty(fileno(stdout));
 
-	while(iter && (iter < end)) {
-		if(*iter == '<') {
+	while (iter && (iter < end)) {
+		if (*iter == '<') {
 			bool has_trailing_slash = false;
 			char* uri = 0;
 			char* name = 0;
@@ -93,23 +93,24 @@ parse_link_format(char* content, coap_size_t content_length, void* context) {
 			uri = strsep(&iter, ">");
 			//uri_len = iter - uri - 1;
 
-			if(!iter)
+			if (!iter) {
 				goto finished_parsing;
+			}
 
 			// Skip past any arguments
-			if(iter && *iter == ';') {
-				while(iter && (iter < end)) {
+			if (iter && *iter == ';') {
+				while (iter && (iter < end)) {
 					char* key;
 					char* value = NULL;
 					char endchar;
 
 					iter++;
 					key=iter;
-					while(*iter && *iter!='=' && *iter!=';' && *iter!=',') {
+					while (*iter && *iter!='=' && *iter!=';' && *iter!=',') {
 						iter++;
 					}
 
-					if(*iter==';') {
+					if (*iter==';') {
 						*iter = 0;
 						if (0 == strcmp(key, "obs")) {
 							obs = true;
@@ -117,7 +118,7 @@ parse_link_format(char* content, coap_size_t content_length, void* context) {
 						continue;
 					}
 
-					if(!*iter || *iter==',') {
+					if (!*iter || *iter==',') {
 						*iter = 0;
 						if (0 == strcmp(key, "obs")) {
 							obs = true;
@@ -128,19 +129,17 @@ parse_link_format(char* content, coap_size_t content_length, void* context) {
 					*iter++ = 0;
 
 					if(*iter == '"') {
-						iter++;
-						value = iter;
-						while(iter) {
-							iter = strstr(iter,"\"");
-							if(!iter || iter[-1]!='\\')
+						value = iter+1;
+						while (iter) {
+							iter = strstr(++iter,"\"");
+							if (!iter || iter[-1]!='\\') {
 								break;
+							}
 						}
-						if(!iter)
+						if (!iter) {
 							break;
+						}
 						*iter++ = 0;
-//								value = strsep(&iter, "\"");
-//								if(!iter)
-//									break;
 						endchar = *iter++;
 					} else {
 						value = iter;
@@ -151,6 +150,7 @@ parse_link_format(char* content, coap_size_t content_length, void* context) {
 						endchar = *iter;
 						*iter++ = 0;
 					}
+
 					{	// Convert all line feeds into " | ".
 						char* value_iter = value;
 						for(;*value_iter;value_iter++) {
@@ -163,48 +163,61 @@ parse_link_format(char* content, coap_size_t content_length, void* context) {
 							}
 						}
 					}
-					// TODO: Unquote...?
-					//url_decode_cstr_inplace(value);
-					if(0 == strcmp(key, "n")) {
+
+					if (0 == strcmp(key, "n")) {
 						name = value;
-					} else if(!name && 0 == strcmp(key, "rt")) {
+
+					} else if (!name && 0 == strcmp(key, "rt")) {
 						name = value;
-					} else if(0 == strcmp(key, "title")) {
+
+					} else if (0 == strcmp(key, "title")) {
 						desc = value;
-					} else if(0 == strcmp(key, "v")) {
+
+					} else if (0 == strcmp(key, "v")) {
 						v = value;
-					} else if(0 == strcmp(key, "ct")) {
+
+					} else if (0 == strcmp(key, "ct")) {
+						// TODO: What if there is more than one type?
 						type = (coap_content_type_t)strtol(value, NULL, 0);
+
 					} else if (0 == strcmp(key, "obs")) {
-						obs = !!strtol(value, NULL, 0);
-					} else if(0 == strcmp(key, "sh")) {
+						obs = (strtol(value, NULL, 0) != NULL);
+
+					} else if (0 == strcmp(key, "sh")) {
 						sh_url = value;
 					}
+
 					//printf("%s = %s\n",key,value);
-					if(endchar == ',' || (iter >= end))
+
+					if (endchar == ',' || (iter >= end)) {
 						break;
-					if(endchar == ';')
+					}
+
+					if (endchar == ';') {
 						iter--;
+					}
 				}
 			}
 
 			char adjusted_uri[NYOCI_MAX_URI_LENGTH + 1];
 
-			if(redirect_url[0] && !url_is_absolute(uri)) {
+			if (redirect_url[0] && !url_is_absolute(uri)) {
 				strcpy(adjusted_uri, redirect_url);
 				url_change(adjusted_uri, uri);
 				uri = adjusted_uri;
 			}
+
 			url_shorten_reference((const char*)original_url, uri);
 
 			// Strip the trailing slash.
-			if(!strchr(uri,'?'))
-			while(uri[0] && uri[strlen(uri)-1]=='/') {
-				has_trailing_slash = true;
-				uri[strlen(uri)-1] = 0;
+			if (!strchr(uri,'?')) {
+				while(uri[0] && uri[strlen(uri)-1]=='/') {
+					has_trailing_slash = true;
+					uri[strlen(uri)-1] = 0;
+				}
 			}
 
-			if(istty && !list_filename_only && type==COAP_CONTENT_TYPE_APPLICATION_LINK_FORMAT)
+			if (istty && !list_filename_only && type==COAP_CONTENT_TYPE_APPLICATION_LINK_FORMAT) {
 				uri_len = fprintf(stdout,
 					"\033[0;1;34m"
 					"%s"
@@ -212,16 +225,22 @@ parse_link_format(char* content, coap_size_t content_length, void* context) {
 					,
 					uri
 				) - 1;
-			else
+
+			} else {
 				uri_len = fprintf(stdout,"%s", uri) - 1;
-			if(has_trailing_slash || type==COAP_CONTENT_TYPE_APPLICATION_LINK_FORMAT)
+			}
+
+			if (has_trailing_slash || type==COAP_CONTENT_TYPE_APPLICATION_LINK_FORMAT) {
 				fprintf(stdout,"/");
-			if(!list_filename_only) {
-				if(v)
+			}
+
+			if (!list_filename_only) {
+				if (v) {
 					fprintf(stdout,"%s%s",istty?"\033[0;1m=\033[0m":"=",v);
+				}
 				fprintf(stdout," ");
-				if(uri_len < col_width) {
-					if(name || (type != COAP_CONTENT_TYPE_UNKNOWN)) {
+				if (uri_len < col_width) {
+					if (name || (type != COAP_CONTENT_TYPE_UNKNOWN)) {
 						uri_len = col_width - uri_len;
 						while(uri_len--) {
 							fprintf(stdout," ");
@@ -233,18 +252,23 @@ parse_link_format(char* content, coap_size_t content_length, void* context) {
 					col_width = uri_len;
 				}
 
-				if(name && (0 != strcmp(name, uri))) fprintf(stdout,"\"%s\" ",
-						name);
-				if(sh_url && (0 != strcmp(sh_url, uri))) fprintf(stdout,
-						"<%s> ",
-						sh_url);
-				if(type != COAP_CONTENT_TYPE_UNKNOWN) fprintf(stdout,"[%s] ",
-						coap_content_type_to_cstr(type));
-				if(desc) {
+				if (name && (0 != strcmp(name, uri))) {
+					fprintf(stdout,"\"%s\" ", name);
+				}
+
+				if (sh_url && (0 != strcmp(sh_url, uri))) {
+					fprintf(stdout, "<%s> ", sh_url);
+				}
+
+				if (type != COAP_CONTENT_TYPE_UNKNOWN) {
+					fprintf(stdout,"[%s] ", coap_content_type_to_cstr(type));
+				}
+
+				if (desc) {
 					fprintf(stdout,"(%s) ",desc);
 				}
 
-				if(obs) {
+				if (obs) {
 					fprintf(stdout,"OBS ");
 				}
 			}
