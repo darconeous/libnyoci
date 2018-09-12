@@ -490,6 +490,8 @@ coap_option_key_to_cstr(
 		case COAP_OPTION_CONTENT_TYPE: ret = "Content-type"; break;
 		case COAP_OPTION_MAX_AGE: ret = "Max-age"; break;
 		case COAP_OPTION_ETAG: ret = "Etag"; break;
+		case COAP_OPTION_IF_MATCH: ret = "If-Match"; break;
+		case COAP_OPTION_IF_NONE_MATCH: ret = "If-None-Match"; break;
 		case COAP_OPTION_PROXY_URI: ret = "Proxy-uri"; break;
 		case COAP_OPTION_URI_HOST: ret = "URI-host"; break;
 		case COAP_OPTION_URI_PORT: ret = "URI-port"; break;
@@ -657,6 +659,7 @@ http_code_to_cstr(int x) {
 		break;
 
 	case HTTP_RESULT_CODE_REQUEST_TIMEOUT: return "REQUEST_TIMEOUT"; break;
+	case HTTP_RESULT_CODE_PRECONDITION_FAILED: return "PRECONDITION_FAILED"; break;
 
 	case HTTP_RESULT_CODE_BAD_REQUEST: return "BAD_REQUEST"; break;
 	case HTTP_RESULT_CODE_UNAUTHORIZED: return "UNAUTHORIZED"; break;
