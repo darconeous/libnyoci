@@ -726,6 +726,22 @@ nyoci_outbound_set_var_content_unsigned_long_int(unsigned long int v)
 }
 
 
+const struct coap_header_s*
+nyoci_outbound_get_packet(void)
+{
+	nyoci_t const self = nyoci_get_current_instance();
+	return self->outbound.packet;
+}
+
+coap_size_t
+nyoci_outbound_get_packet_length(void)
+{
+	nyoci_t const self = nyoci_get_current_instance();
+	coap_size_t header_len = (coap_size_t)(nyoci_outbound_get_content_ptr(NULL)-(char*)self->outbound.packet);
+	return header_len+self->outbound.content_len;
+}
+
+
 nyoci_status_t
 nyoci_outbound_quick_response(coap_code_t code, const char* body)
 {
