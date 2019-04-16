@@ -440,6 +440,8 @@ nyoci_directory_generator(
 	// Don't add the internal commands to the history.
 	history_disabled = true;
 
+	bool currPathIsRoot = url_is_root(getenv("NYOCI_CURRENT_PATH"));
+
 	/* If this is a new word to complete, initialize now.  This includes
 	 saving the length of TEXT for efficiency, and initializing the index
 	 variable to 0. */
@@ -462,40 +464,42 @@ nyoci_directory_generator(
 		// Figure out where the last path component starts.
 		for(i=strlen(prefix);i && prefix[i]!='/';i--);
 
-		if(prefix[i]=='/') {
-			prefix[i] = 0;
-			if(i==0) {
-				prefix = strdup("/");
-			}
-			fragment = strdup(prefix+i+1);
-		} else {
+		if (i == 0) {
 			fragment = strdup(prefix);
 			free(prefix);
-			prefix = strdup(".");
+			prefix = strdup("./");
+
+		} else {
+			fragment = strdup(prefix+i+1);
+			prefix[i+1] = 0;
 		}
+
 		char* cmdline = NULL;
 		FILE* real_stdout = stdout;
 
-		if(url_is_root(getenv("NYOCI_CURRENT_PATH")) && !url_is_root(prefix)) {
-			if(!i) {
-				asprintf(&cmdline, "list --filename-only --timeout 750 /.well-known/core");
-				require(cmdline,bail);
-				//fprintf(stderr,"\n[cmd=\"%s\"] ",cmdline);
+		//fprintf(stderr,"\n[text=\"%s\"] ",text);
+		//fprintf(stderr,"\n[prefix=\"%s\"] ",prefix);
+		//fprintf(stderr,"\n[fragment=\"%s\"] ",fragment);
 
-				fprintf(temp_file,".well-known/\n");
+		if(strequal_const(prefix, ".well-known/")) {
+			fprintf(temp_file,"core\n");
+		}
 
-				stdout = temp_file;
-				process_input_line(cmdline);
-				stdout = real_stdout;
-				free(cmdline);
-			} else {
-				if(strequal_const(prefix, ".well-known")) {
-					fprintf(temp_file,"core\n");
-				}
-			}
+		if(currPathIsRoot && !url_is_root(prefix) && i == 0) {
+			asprintf(&cmdline, "list --filename-only --timeout 1000 /.well-known/core");
+			require(cmdline,bail);
+			//fprintf(stderr,"\n[cmd=\"%s\"] ",cmdline);
+
+			fprintf(temp_file,".well-known/\n");
+
+			stdout = temp_file;
+			process_input_line(cmdline);
+			stdout = real_stdout;
+			free(cmdline);
 		} else {
 			asprintf(&cmdline, "list --filename-only --timeout 1000 \"%s\"",prefix);
 			require(cmdline,bail);
+			//fprintf(stderr,"\n[cmd=\"%s\"] ",cmdline);
 
 			stdout = temp_file;
 			if(strequal_const(fragment, "."))
@@ -513,25 +517,42 @@ nyoci_directory_generator(
 
 	while ((name = fgetln(temp_file, &namelen)))
 	{
-		if(namelen<len)
+		// Remove any trailing whitespace
+		while (namelen && isspace(name[namelen-1])) { namelen--; }
+
+		//fprintf(stderr,"\n[candidate=\"%.*s\" namelen=%d] ",namelen,name,namelen);
+
+		// Ignore candidates that have a length smaller than our candidate
+		if (namelen < len) {
 			continue;
-		//fprintf(stderr,"\n[candidate=\"%s\" namelen=%d] ",name,namelen);
-		if(url_is_root(getenv("NYOCI_CURRENT_PATH")) && strequal_const(prefix,".")) {
+		}
+
+		if (name[0] == '.') {
+			if (namelen == 1) {
+				continue;
+			} else if (namelen == 2 && name[1] == '/') {
+				continue;
+			}
+		}
+
+		if (namelen == 2 && name[0] == '.') {
+			continue;
+		}
+
+		if(currPathIsRoot && strequal_const(prefix,"./")) {
 			while(name[0]=='/') {
 				name++;
 				namelen--;
 			}
 		}
 		if (strncmp (name, fragment, len) == 0) {
-			while(namelen && isspace(name[namelen-1])) { namelen--; }
-			//namelen--;
 			if(name[namelen-1]=='/')
 				rl_completion_append_character = 0;
 
 			if(	strequal_const(prefix, "/")
-				|| strequal_const(prefix, ".")
+				|| strequal_const(prefix, "./")
 				|| name[0]=='/'
-				||(url_is_root(getenv("NYOCI_CURRENT_PATH")) && strequal_const(prefix,"."))
+				|| (currPathIsRoot && strequal_const(prefix,"./"))
 			) {
 				ret = strndup(name,namelen);
 			} else {

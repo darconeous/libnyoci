@@ -15,7 +15,7 @@ then
 
 	cd "${BUILD_MAKEPATH}" || die
 
-	../configure ${BUILD_CONFIGFLAGS} || die
+	../configure --disable-dependency-tracking ${BUILD_CONFIGFLAGS} || die
 
 	cd "${PREV_PATH}" || die
 fi
