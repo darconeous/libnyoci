@@ -490,6 +490,12 @@ NYOCI_API_EXTERN nyoci_status_t nyoci_outbound_append_content_formatted(const ch
 	nyoci_outbound_append_content_formatted(fmt,__VA_ARGS__)
 #endif
 
+//!	Returns a pointer to the start of the current outbound CoAP packet.
+NYOCI_API_EXTERN const struct coap_header_s* nyoci_outbound_get_packet(void);
+
+//!	Returns the length of the outbound packet.
+NYOCI_API_EXTERN  coap_size_t nyoci_outbound_get_packet_length(void);
+
 //!	Sends the outbound packet.
 /*!	After calling this function, you are done for this callback. You may not
 **	call any other nyoci_outbound_* functions. You may only send one outbound

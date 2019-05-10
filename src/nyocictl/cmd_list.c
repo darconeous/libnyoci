@@ -181,7 +181,7 @@ parse_link_format(char* content, coap_size_t content_length, void* context) {
 						type = (coap_content_type_t)strtol(value, NULL, 0);
 
 					} else if (0 == strcmp(key, "obs")) {
-						obs = (strtol(value, NULL, 0) != NULL);
+						obs = (strtol(value, NULL, 0) != 0);
 
 					} else if (0 == strcmp(key, "sh")) {
 						sh_url = value;

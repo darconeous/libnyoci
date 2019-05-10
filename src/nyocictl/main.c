@@ -75,6 +75,12 @@ static arg_list_item_t option_list[] = {
 
 void print_commands(void);
 
+static void print_env_help(void) {
+	printf("Environment:\n"
+		   "   NYOCI_CURRENT_PATH    CoAP URL to access; defaults to coap://localhost/\n"
+		   "   COAP_PROXY_URL        Proxy server to use\n");
+}
+
 static int
 tool_cmd_help(
 	nyoci_t nyoci, int argc, char* argv[]
@@ -92,6 +98,7 @@ tool_cmd_help(
 		return exec_command(nyoci, 2, (char**)argv2);
 	} else {
 		print_commands();
+		print_env_help();
 	}
 	return ERRORCODE_HELP;
 }
@@ -787,6 +794,7 @@ main(
 			argv[0],
 			"[options] <sub-command> [args]");
 		print_commands();
+		print_env_help();
 		gRet = ERRORCODE_HELP;
 		goto bail;
 	}
