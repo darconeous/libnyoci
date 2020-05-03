@@ -1044,3 +1044,25 @@ bail:
 
 	return ret;
 }
+
+bool
+nyoci_plat_tls_finalize(
+	nyoci_t self
+) {
+	// Remove all sessions
+	while(self->plat.ssl.sessions) {
+		bt_remove(
+			(void**)&self->plat.ssl.sessions,
+			self->plat.ssl.sessions,
+			(bt_compare_func_t)nyoci_openssl_session_compare,
+			(bt_delete_func_t)nyoci_openssl_session_finalize,
+			self
+		);
+	}
+
+	// Free SSL context
+	if (self->plat.ssl.ssl_ctx) {
+		SSL_CTX_free(self->plat.ssl.ssl_ctx);
+		self->plat.ssl.ssl_ctx = NULL;
+	}
+}

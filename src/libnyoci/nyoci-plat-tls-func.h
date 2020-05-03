@@ -114,4 +114,8 @@ NYOCI_API_EXTERN nyoci_status_t nyoci_plat_tls_outbound_packet_process(
 	int data_len
 );
 
+NYOCI_API_EXTERN bool nyoci_plat_tls_finalize(
+	nyoci_t self
+);
+
 #endif // NYOCI_nyoci_plat_tls_h
