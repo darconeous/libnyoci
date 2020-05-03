@@ -157,6 +157,10 @@ nyoci_release(nyoci_t self) {
 		nyoci_invalidate_timer(self, timer);
 	}
 
+#if NYOCI_DTLS
+	nyoci_plat_tls_finalize(self);
+#endif
+
 	nyoci_plat_finalize(self);
 
 #if !NYOCI_SINGLETON

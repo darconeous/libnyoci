@@ -580,7 +580,7 @@ sendtofrom(
 		check(ret>0);
 	} else {
 		struct iovec iov = { (void *)data, len };
-		uint8_t cmbuf[CMSG_SPACE(sizeof (struct in6_pktinfo))];
+		uint8_t cmbuf[CMSG_SPACE(sizeof (struct in6_pktinfo))] = {0};
 		struct cmsghdr *scmsgp;
 		struct msghdr msg = {
 			.msg_name = (void*)saddr_to,
@@ -868,7 +868,7 @@ nyoci_plat_process(
 				nyoci_sockaddr_t remote_saddr = {};
 				nyoci_sockaddr_t local_saddr = {};
 				ssize_t packet_len = 0;
-				char cmbuf[0x100];
+				char cmbuf[0x100] = {0};
 				struct iovec iov = { packet, NYOCI_MAX_PACKET_LENGTH };
 				struct msghdr msg = {
 					.msg_name = &remote_saddr,
